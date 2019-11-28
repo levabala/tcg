@@ -8,8 +8,8 @@ namespace tcg
 {
   class Hero
   {
-    public int HP {get; set;}
-    public int Mana{get; set;}
+    public int HP { get; set; }
+    public int Mana { get; set; }
 
     public Hero(int hp, int mana)
     {
