@@ -6,15 +6,15 @@ using System.Threading.Tasks;
 
 namespace tcg
 {
-    struct PlayerAction
-    {
-        public int PlayerId { get; set; }
-        public ActionType Type { get; set; }
+  struct PlayerAction
+  {
+    public int PlayerId { get; set; }
+    public ActionType Type { get; set; }
 
-        public PlayerAction(int playerId, ActionType type)
-        {
-            this.PlayerId = playerId;
-            this.Type = type;
-        }
+    public PlayerAction(int playerId, ActionType type)
+    {
+      this.PlayerId = playerId;
+      this.Type = type;
     }
+  }
 }
