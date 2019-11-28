@@ -35,6 +35,10 @@ namespace tcg
       attacker.ActiveCards[0] = new Card(attackerCard.ManaCost, newAttackerHP, attackerCard.Attack);
       target.ActiveCards[0] = new Card(targetCard.ManaCost, newTargetHP, targetCard.Attack);
 
+      // we are returning "state" here to have an ability to chain actions
+      // GameState freshState = Action1(Action2(Action3(state)))
+      // maybe we need to build "pipe" function to make it more clear
+      // GameState freshState = Pipe(state, Action1, Action2, Action3)
       return state;
     }
   }
