@@ -9,7 +9,7 @@ namespace tcg
     public Client(Middleware middleware)
     {
       this.middleware = middleware;
-      middleware.SetInputHandler(HandleInput);
+      middleware.AddInputHandler((i, input) => HandleInput(input));
     }
 
     public void HandleInput(string input)

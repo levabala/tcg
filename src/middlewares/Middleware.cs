@@ -1,10 +1,14 @@
 using System;
+using System.Collections.Generic;
 
 namespace tcg
 {
-  interface Middleware
+  abstract class Middleware
   {
-    void SendData(string data);
-    void SetInputHandler(Action<string> handler);
+    public List<Action<string>> onSendDataListeners = new List<Action<string>>();
+    protected List<Middleware> connectedMiddleware = new List<Middleware>();
+    abstract public void SendData(string data);
+    abstract public void AddInputHandler(Action<int, string> handler);
+    abstract public void ConnectMiddleware(Middleware middleware);
   }
 }

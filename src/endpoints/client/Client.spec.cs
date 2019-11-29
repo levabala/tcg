@@ -15,7 +15,7 @@ namespace tcgTests
 
       Client c = new Client(mid1);
 
-      mid2.SetInputHandler((input) => Assert.AreEqual(input, "client message"));
+      mid2.AddInputHandler((senderId, input) => Assert.AreEqual(input, "client message"));
 
       c.SendCommand("client message");
     }

@@ -1,37 +1,44 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace tcg
 {
   class Host
   {
-    readonly Middleware middlewarePlayer1, middlewarePlayer2;
+    readonly List<Middleware> playersMiddleware;
+    readonly Middleware middleware;
     List<Action<int, string>> inputHadlers = new List<Action<int, string>>();
-    public Host(Middleware middlewarePlayer1, Middleware middlewarePlayer2)
+    public Host(Middleware middleware, IEnumerable<Middleware> playersMiddleware)
     {
-      this.middlewarePlayer1 = middlewarePlayer1;
-      this.middlewarePlayer2 = middlewarePlayer2;
+      this.middleware = middleware;
+      this.playersMiddleware = playersMiddleware.ToList();
 
-      // it's function composition
-      // we use lambda functions to add an additional argumnet - playerIndex
-      // for first player input index is 1 (second player)
-      // for second one it's 0 (first player)
-      middlewarePlayer1.SetInputHandler((input) => HandleInput(1, input));
-      middlewarePlayer2.SetInputHandler((input) => HandleInput(0, input));
+      // this.playersMiddleware.ForEach(mid => this.middleware.ConnectMiddleware(mid));
+      this.middleware.AddInputHandler(HandleInput);
     }
 
     public void HandleInput(int playerIndex, string input)
     {
       inputHadlers.ForEach(handler => handler(playerIndex, input));
+
+      ResponseType validationStatus;
+      string message;
+      (validationStatus, message) = ProcessInput(playerIndex, input);
+
+      if (validationStatus == ResponseType.Error)
+      {
+
+      }
     }
 
-    public void AddHandlerInput(Action<int, string> handler)
+    public void AddInputHandler(Action<int, string> handler)
     {
       inputHadlers.Add(handler);
     }
 
     // TODO: add input json parsing (and create json configuration)
-    public (ResponseType, string) ProcessInput(string input)
+    public (ResponseType, string) ProcessInput(int playerIndex, string input)
     {
       try
       {

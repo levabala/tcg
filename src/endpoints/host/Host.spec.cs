@@ -1,52 +1,82 @@
 using NUnit.Framework;
 using tcg;
 using System;
+using System.Collections.Generic;
 
 namespace tcgTests
 {
   [TestFixture]
   public class HostTestsFixture
   {
-    private (MiddlewareLocal, MiddlewareLocal, Host) InitializePreset()
+    private (MiddlewareLocal, MiddlewareLocal, MiddlewareLocal, Host) InitializePreset()
     {
-      MiddlewareLocal mid1, mid2;
-      (mid1, mid2) = MiddlewareLocal.GenerateLinkedMiddlewareLocalPair();
+      MiddlewareLocal mid1, mid2, midHost;
+      (mid1, mid2, midHost) = MiddlewareLocal.GenerateLinkedMiddlewareLocalTriple();
 
-      Host host = new Host(mid1, mid2);
+      Host host = new Host(midHost, new List<MiddlewareLocal> { mid1, mid2 });
 
-      return (mid1, mid2, host);
+      return (mid1, mid2, midHost, host);
     }
 
     [Test]
     public void Initialize()
     {
-      Middleware mid1, mid2;
+      Middleware mid1, mid2, midHost;
       Host host;
 
-      (mid1, mid2, host) = InitializePreset();
+      (mid1, mid2, midHost, host) = InitializePreset();
     }
 
     [Test]
-    public void SendDataTest()
+    public void PlayerToHostSendDataTest()
     {
-      Middleware mid1, mid2;
+      Middleware mid1, mid2, midHost;
       Host host;
 
-      (mid1, mid2, host) = InitializePreset();
+      (mid1, mid2, midHost, host) = InitializePreset();
 
 
+      int executions = 0;
       Action<int, string> inputHandler = (playerIndex, input) =>
       {
         if (playerIndex == 0)
           Assert.AreEqual("player1 message", input);
         else if (playerIndex == 1)
           Assert.AreEqual("player2 message", input);
+
+        executions++;
       };
 
-      host.AddHandlerInput(inputHandler);
+      host.AddInputHandler(inputHandler);
 
       mid1.SendData("player1 message");
       mid2.SendData("player2 message");
+
+      Assert.AreEqual(executions, 2);
+    }
+
+    [Test]
+    public void HostToPlayerSendDataTest()
+    {
+      Middleware mid1, mid2, midHost;
+      Host host;
+
+      (mid1, mid2, midHost, host) = InitializePreset();
+
+
+      int executions = 0;
+      Action<int, string> inputHandler = (_, input) =>
+      {
+        Assert.AreEqual("host's message", input);
+        executions++;
+      };
+
+      mid1.AddInputHandler(inputHandler);
+      mid2.AddInputHandler(inputHandler);
+
+      midHost.SendData("host's message");
+
+      Assert.AreEqual(executions, 2);
     }
   }
 }
