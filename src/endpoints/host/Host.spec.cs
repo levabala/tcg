@@ -1,22 +1,33 @@
 using NUnit.Framework;
+using tcg;
 
 namespace tcgTests
 {
   [TestFixture]
-  public class tcgTestsFixture
+  public class HostTestsFixture
   {
-
     [Test]
-    public void JustATest()
+    public void HandlingInputTest1()
     {
-      Assert.Pass("done with it!");
+      Host h = new Host();
+
+      ResponseType responseType;
+      string responseMessage;
+      (responseType, responseMessage) = h.HandleInput("attack 1 3");
+
+      Assert.AreEqual(responseType, ResponseType.Success);
     }
 
-
     [Test]
-    public void JustAFailureTest()
+    public void HandlingInputTest2()
     {
-      Assert.Fail("fail with it!");
+      Host h = new Host();
+
+      ResponseType responseType;
+      string responseMessage;
+      (responseType, responseMessage) = h.HandleInput("qwe");
+
+      Assert.AreEqual(responseType, ResponseType.Error);
     }
   }
 }
