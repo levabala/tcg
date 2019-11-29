@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace tcg
 {
-  struct PlayerAction
+  class PlayerAction
   {
     public int PlayerId { get; set; }
     public ActionType Type { get; set; }

@@ -1,16 +1,52 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace tcg
 {
   class Host
   {
-    public Host()
+    readonly List<Middleware> playersMiddleware;
+    readonly Middleware middleware;
+    List<Action<int, string>> inputHadlers = new List<Action<int, string>>();
+    public Host(Middleware middleware, IEnumerable<Middleware> playersMiddleware)
     {
+      this.middleware = middleware;
+      this.playersMiddleware = playersMiddleware.ToList();
 
+      // this.playersMiddleware.ForEach(mid => this.middleware.ConnectMiddleware(mid));
+      this.middleware.AddInputHandler(HandleInput);
     }
 
-    public (ResponseType, string) HandleInput(string input)
+    public void HandleInput(int playerIndex, string input)
+    {
+      inputHadlers.ForEach(handler => handler(playerIndex, input));
+
+      ResponseType validationStatus;
+      string message;
+      (validationStatus, message) = ProcessInput(playerIndex, input);
+
+      if (validationStatus == ResponseType.Error)
+        SendDataToPlayer(message, playerIndex);
+    }
+
+    public void SendDataToPlayer(string data, int playerIndex)
+    {
+      middleware.SendDataPersonally(data, playerIndex);
+    }
+
+    public void SendData(string data)
+    {
+      middleware.SendData(data);
+    }
+
+    public void AddInputHandler(Action<int, string> handler)
+    {
+      inputHadlers.Add(handler);
+    }
+
+    // TODO: add input json parsing (and create json configuration)
+    public (ResponseType, string) ProcessInput(int playerIndex, string input)
     {
       try
       {
