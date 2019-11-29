@@ -11,12 +11,12 @@ namespace tcg
     public int ManaCost { get; set; }
     public int HP { get; set; }
     public int Attack { get; set; }
-    public PlayerAction StartAction { get; set; }
-    public PlayerAction UseAction { get; set; }
-    public PlayerAction DieAction { get; set; }
-    public PlayerAction AttackProcessAction { get; set; }
+    public CardAction StartAction { get; set; }
+    public CardAction UseAction { get; set; }
+    public CardAction DieAction { get; set; }
+    public CardAction AttackProcessAction { get; set; }
 
-    public Card(int mana, int hp, int attack, PlayerAction startAction = null, PlayerAction useAction = null, PlayerAction dieAction = null, PlayerAction attackProcessAction = null)
+    public Card(int mana, int hp, int attack, CardAction startAction = null, CardAction useAction = null, CardAction dieAction = null, CardAction attackProcessAction = null)
     {
       ManaCost = mana;
       HP = hp;
