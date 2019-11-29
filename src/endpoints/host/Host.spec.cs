@@ -48,6 +48,8 @@ namespace tcgTests
       };
 
       host.AddInputHandler(inputHandler);
+      mid1.AddInputHandler((a, b) => { });
+      mid2.AddInputHandler((a, b) => { });
 
       mid1.SendData("player1 message");
       mid2.SendData("player2 message");
@@ -77,6 +79,28 @@ namespace tcgTests
       midHost.SendData("host's message");
 
       Assert.AreEqual(executions, 2);
+    }
+
+    [Test]
+    public void HostInputValidationTest()
+    {
+      Middleware mid1, mid2, midHost;
+      Host host;
+
+      (mid1, mid2, midHost, host) = InitializePreset();
+
+      bool responseGot = false;
+      mid1.AddInputHandler((sender, input) =>
+      {
+        Assert.AreEqual(input, "Command name is not listed in commandsMap");
+        responseGot = true;
+      });
+
+      Client client = new Client(mid1);
+      client.SendCommand("that's a wrong command");
+
+
+      Assert.IsTrue(responseGot);
     }
   }
 }

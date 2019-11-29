@@ -22,26 +22,29 @@ namespace tcg
       middleware.ConnectMiddleware(this);
     }
 
-    private void CheckIfSendMiddlewareIsAssigned()
-    {
-      if (connectedMiddleware.Count == 0)
-        throw new Exception("No middlewares connected");
-    }
-
     public override void SendData(string data)
     {
-      CheckIfSendMiddlewareIsAssigned();
-
-      // dispatch send data event
-      onSendDataListeners.ForEach(listener => listener(data));
+      for (int i = 0; i < onSendDataListeners.Count; i++)
+        SendDataPersonally(data, i);
     }
+
+    public override void SendDataPersonally(string data, int receiverIndex)
+    {
+      // dispatch send data event
+      onSendDataListeners[receiverIndex](data);
+    }
+
     public override void AddInputHandler(Action<int, string> handler)
     {
-      CheckIfSendMiddlewareIsAssigned();
-
       for (int i = 0; i < connectedMiddleware.Count; i++)
       {
-        connectedMiddleware[i].onSendDataListeners.Add(input => handler(i, input));
+        Action<string> closure = ((Func<Action<string>>)(() =>
+        {
+          int localI = i;
+          return input => handler(localI, input);
+        }))();
+
+        connectedMiddleware[i].onSendDataListeners.Add(closure);
       }
     }
 

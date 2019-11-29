@@ -27,9 +27,17 @@ namespace tcg
       (validationStatus, message) = ProcessInput(playerIndex, input);
 
       if (validationStatus == ResponseType.Error)
-      {
+        SendDataToPlayer(message, playerIndex);
+    }
 
-      }
+    public void SendDataToPlayer(string data, int playerIndex)
+    {
+      middleware.SendDataPersonally(data, playerIndex);
+    }
+
+    public void SendData(string data)
+    {
+      middleware.SendData(data);
     }
 
     public void AddInputHandler(Action<int, string> handler)
