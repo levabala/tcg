@@ -5,12 +5,33 @@ namespace tcg
 {
   class Host
   {
-    public Host()
+    readonly Middleware middlewarePlayer1, middlewarePlayer2;
+    List<Action<int, string>> inputHadlers = new List<Action<int, string>>();
+    public Host(Middleware middlewarePlayer1, Middleware middlewarePlayer2)
     {
+      this.middlewarePlayer1 = middlewarePlayer1;
+      this.middlewarePlayer2 = middlewarePlayer2;
 
+      // it's function composition
+      // we use lambda functions to add an additional argumnet - playerIndex
+      // for first player input index is 1 (second player)
+      // for second one it's 0 (first player)
+      middlewarePlayer1.SetInputHandler((input) => HandleInput(1, input));
+      middlewarePlayer2.SetInputHandler((input) => HandleInput(0, input));
     }
 
-    public (ResponseType, string) HandleInput(string input)
+    public void HandleInput(int playerIndex, string input)
+    {
+      inputHadlers.ForEach(handler => handler(playerIndex, input));
+    }
+
+    public void AddHandlerInput(Action<int, string> handler)
+    {
+      inputHadlers.Add(handler);
+    }
+
+    // TODO: add input json parsing (and create json configuration)
+    public (ResponseType, string) ProcessInput(string input)
     {
       try
       {
