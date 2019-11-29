@@ -4,15 +4,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace tcg {
-  struct GameState {
+namespace tcg
+{
+  class GameState
+  {
     public bool IsFinished { get; set; }
     public Player CurrentPlayer { get; set; }
     public Player[] Players { get; set; }
     public int Target { get; set; }
     public int Attacker { get; set; }
 
-    public GameState (Player currPlayer, Player[] players) {
+    public GameState(Player currPlayer, Player[] players)
+    {
       IsFinished = false;
       CurrentPlayer = currPlayer;
       Players = players;
