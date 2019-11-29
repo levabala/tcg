@@ -35,5 +35,17 @@ namespace tcg
 
       middleware2.onSendDataListener = handler;
     }
+
+    public static (MiddlewareLocal, MiddlewareLocal) GenerateLinkedMiddlewareLocalPair()
+    {
+      MiddlewareLocal mid1 = new MiddlewareLocal();
+      MiddlewareLocal mid2 = new MiddlewareLocal();
+
+      // assign them together
+      mid1.AssignSecondMiddleware(mid2);
+      mid2.AssignSecondMiddleware(mid1);
+
+      return (mid1, mid2);
+    }
   }
 }

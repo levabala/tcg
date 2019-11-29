@@ -9,12 +9,8 @@ namespace tcgTests
   {
     private (MiddlewareLocal, MiddlewareLocal, Host) InitializePreset()
     {
-      MiddlewareLocal mid1 = new MiddlewareLocal();
-      MiddlewareLocal mid2 = new MiddlewareLocal();
-
-      // assign them together
-      mid1.AssignSecondMiddleware(mid2);
-      mid2.AssignSecondMiddleware(mid1);
+      MiddlewareLocal mid1, mid2;
+      (mid1, mid2) = MiddlewareLocal.GenerateLinkedMiddlewareLocalPair();
 
       Host host = new Host(mid1, mid2);
 

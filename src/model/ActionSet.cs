@@ -28,7 +28,7 @@ namespace tcg
       attackerCard.HP -= targetCard.Attack;
       targetCard.HP -= attackerCard.Attack;
 
-      // i suppose we can use Class instead of Card, Player etc
+      // i suppose we can use Class instead of Struct for Card, Player etc
       // to access them by link
       // anyway, we are not goind to do completely immutable system
       // so we can use mutations where it's the easiest strategy
