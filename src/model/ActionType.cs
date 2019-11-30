@@ -12,5 +12,6 @@ namespace tcg
     HealSelf,
     Die,
     Print,
+    TakeCard,
   }
 }

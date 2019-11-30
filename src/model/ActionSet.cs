@@ -19,7 +19,8 @@ namespace tcg
             {ActionType.Attack, Attack },
             {ActionType.HealSelf, HealSelf},
             {ActionType.Die, Die},
-            {ActionType.Print, Print}
+            {ActionType.Print, Print},
+            {ActionType.TakeCard, TakeCard}
         };
 
     private static GameState Attack(GameState state)
@@ -75,19 +76,33 @@ namespace tcg
       }
     }
 
+    private static GameState TakeCard(GameState state)
+    {
+      GetPlayersAndCards(state);
+      if (attacker.CardInHand.Count < Player.MaxNumberCardInHand && attacker.CardSet.Count > 0)
+      {
+
+      }
+      return GameState;
+    }
+
     private static GameState Print(GameState state)
     {
       Console.WriteLine("Hi");
       return state;
     }
 
+
     private static void GetPlayersAndCards(GameState state)
     {
       attacker = state.CurrentPlayer;
       target = state.Players[0].Id != attacker.Id ? state.Players[0] : state.Players[1];
 
-      attackerCard = attacker.ActiveCards[state.Attacker];
-      targetCard = target.ActiveCards[state.Target];
+      // what is state.Attaker and state.Target if action is drawCard or else
+      if (state.Attacker >= 0)
+        attackerCard = attacker.ActiveCards[state.Attacker];
+      if (state.Target >= 0)
+        targetCard = target.ActiveCards[state.Target];
     }
   }
 }

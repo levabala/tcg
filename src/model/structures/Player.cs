@@ -8,6 +8,8 @@ namespace tcg
 {
   class Player
   {
+    public static int MaxNumberCardInHand = 5;
+
     public int Id { get; set; }
 
     public Hero hero { get; set; }
