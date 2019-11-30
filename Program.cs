@@ -20,8 +20,8 @@ namespace tcg
 
       freshState = ActionSet.actions[ActionType.Die](state);
 
-      Console.WriteLine(freshState.Players[0].ActiveCards.Length);
-      Console.WriteLine(freshState.Players[1].ActiveCards[0]);
+      Console.WriteLine(freshState.Players[0].ActiveCards.Count);
+      Console.WriteLine(freshState.Players[1].ActiveCards.Count);
     }
 
     private static GameState InitGameState()
@@ -31,8 +31,10 @@ namespace tcg
 
       CardAction heal = new CardAction(1, ActionType.HealSelf, 0, 200);
       CardAction print = new CardAction(1, ActionType.Print, 0, 0);
-      player1.ActiveCards[0] = new Card(20, 20, 20, useAction: heal);
-      player2.ActiveCards[0] = new Card(10, 20, 5, dieAction: print);
+
+      player1.ActiveCards.Add(new Card(20, 20, 20, useAction: heal));
+      player2.ActiveCards.Add(new Card(10, 20, 5, dieAction: print));
+
 
       GameState state = new GameState(player1, new Player[] { player1, player2 });
 

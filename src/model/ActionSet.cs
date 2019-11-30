@@ -8,6 +8,12 @@ namespace tcg
 {
   class ActionSet
   {
+    private static Player attacker;
+    private static Player target;
+
+    private static Card attackerCard;
+    private static Card targetCard;
+
     public static Dictionary<ActionType, Func<GameState, GameState>> actions = new Dictionary<ActionType, Func<GameState, GameState>>
         {
             {ActionType.Attack, Attack },
@@ -18,11 +24,7 @@ namespace tcg
 
     private static GameState Attack(GameState state)
     {
-      Player attacker = state.CurrentPlayer;
-      Player target = state.Players[0].Id != attacker.Id ? state.Players[0] : state.Players[1];
-
-      Card attackerCard = attacker.ActiveCards[state.Attacker];
-      Card targetCard = target.ActiveCards[state.Target];
+      GetPlayersAndCards(state);
 
       if (attackerCard.UseAction != null)
       {
@@ -39,11 +41,7 @@ namespace tcg
 
     private static GameState HealSelf(GameState state)
     {
-      Player attacker = state.CurrentPlayer;
-      Player target = state.Players[0].Id != attacker.Id ? state.Players[0] : state.Players[1];
-
-      Card attackerCard = attacker.ActiveCards[state.Attacker];
-      Card targetCard = target.ActiveCards[state.Target];
+      GetPlayersAndCards(state);
 
       attackerCard.HP += attackerCard.UseAction.Power;
 
@@ -52,39 +50,44 @@ namespace tcg
 
     private static GameState Die(GameState state)
     {
-      Player attacker = state.CurrentPlayer;
-      Player target = state.Players[0].Id != attacker.Id ? state.Players[0] : state.Players[1];
-
-      Card attackerCard = attacker.ActiveCards[state.Attacker];
-      Card targetCard = target.ActiveCards[state.Target];
-
-      if (attackerCard.HP <= 0)
-      {
-        if (attackerCard.DieAction != null)
-        {
-          ActionType type = attackerCard.DieAction.Type;
-          state = actions[type](state);
-        }
-        attacker.ActiveCards[state.Attacker] = null;
-      }
-
-      if (targetCard.HP <= 0)
-      {
-        if (targetCard.DieAction != null)
-        {
-          ActionType type = targetCard.DieAction.Type;
-          state = actions[type](state);
-        }
-        target.ActiveCards[state.Target] = null;
-      }
-
+      GetPlayersAndCards(state);
+      CheckAndPerformDeath(state);
       return state;
+    }
+
+    private static void CheckAndPerformDeath(GameState state)
+    {
+      foreach (Player player in state.Players)
+      {
+        for (int i = 0; i < player.ActiveCards.Count; i++)
+        {
+          Card card = player.ActiveCards[i];
+          if (card.HP <= 0)
+          {
+            if (card.DieAction != null)
+            {
+              ActionType type = card.DieAction.Type;
+              state = actions[type](state);
+            }
+            player.ActiveCards.RemoveAt(i);
+          }
+        }
+      }
     }
 
     private static GameState Print(GameState state)
     {
       Console.WriteLine("Hi");
       return state;
+    }
+
+    private static void GetPlayersAndCards(GameState state)
+    {
+      attacker = state.CurrentPlayer;
+      target = state.Players[0].Id != attacker.Id ? state.Players[0] : state.Players[1];
+
+      attackerCard = attacker.ActiveCards[state.Attacker];
+      targetCard = target.ActiveCards[state.Target];
     }
   }
 }

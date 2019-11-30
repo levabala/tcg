@@ -10,7 +10,6 @@ namespace tcg
   {
     Attack,
     HealSelf,
-
     Die,
     Print,
   }

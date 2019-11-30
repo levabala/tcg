@@ -1,17 +1,19 @@
 using NUnit.Framework;
 using tcg;
 using System;
+using System.Collections.Generic;
 
 namespace tcgTests
 {
   [TestFixture]
   public class ActionSetTestsFixture
   {
+
     [Test]
     public void TestAttackWithoutActions()
     {
-      Card[] player1Cards = new Card[] { new Card(20, 20, 10) };
-      Card[] player2Cards = new Card[] { new Card(20, 20, 5) };
+      var player1Cards = new List<Card>() { new Card(20, 20, 10) };
+      var player2Cards = new List<Card>() { new Card(20, 20, 5) };
 
       GameState state = InitGameState(player1Cards, player2Cards);
 
@@ -29,8 +31,8 @@ namespace tcgTests
       CardAction heal = new CardAction(1, ActionType.HealSelf, 0, 200);
       Card cardWithHeal = new Card(20, 20, 10, useAction: heal);
 
-      Card[] player1Cards = new Card[] { cardWithHeal };
-      Card[] player2Cards = new Card[] { new Card(20, 20, 5) };
+      List<Card> player1Cards = new List<Card>() { cardWithHeal };
+      List<Card> player2Cards = new List<Card>() { new Card(20, 20, 5) };
 
       GameState state = InitGameState(player1Cards, player2Cards);
 
@@ -42,7 +44,24 @@ namespace tcgTests
       Assert.IsTrue(card1.HP == 215 && card2.HP == 10);
     }
 
-    private GameState InitGameState(Card[] player1Cards, Card[] player2Cards)
+    [Test]
+    public void TestAttackWithDeath()
+    {
+      List<Card> player1Cards = new List<Card>() { new Card(20, 20, 30) };
+      List<Card> player2Cards = new List<Card>() { new Card(20, 20, 5) };
+
+      GameState state = InitGameState(player1Cards, player2Cards);
+
+      GameState freshState = ActionSet.actions[ActionType.Attack](state);
+      freshState = ActionSet.actions[ActionType.Die](state);
+
+      Player player1 = freshState.Players[0];
+      Player player2 = freshState.Players[1];
+
+      Assert.IsTrue(player1.ActiveCards.Count == 1 && player2.ActiveCards.Count == 0);
+    }
+
+    private GameState InitGameState(List<Card> player1Cards, List<Card> player2Cards)
     {
 
       Player player1 = new Player(1);
