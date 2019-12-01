@@ -58,7 +58,7 @@ namespace tcg
 
     private static void CheckAndPerformDeath(GameState state)
     {
-      foreach (Player player in state.Players)
+      foreach (var player in state.Players)
       {
         for (int i = 0; i < player.ActiveCards.Count; i++)
         {
@@ -81,9 +81,19 @@ namespace tcg
       GetPlayersAndCards(state);
       if (attacker.CardInHand.Count < Player.MaxNumberCardInHand && attacker.CardSet.Count > 0)
       {
+        var inHand = attacker.CardInHand;
+        var inSet = attacker.CardSet;
+        inHand.Add(inSet[inSet.Count - 1]);
+        inSet.RemoveAt(inSet.Count - 1);
 
+        // var playedCard = inHand[inHand.Count - 1];
+        // if (inHand[inHand.Count - 1].StartAction != null)
+        // {
+        //   ActionType type = playedCard.StartAction.Type;
+        //   state = actions[type](state);
+        // }
       }
-      return GameState;
+      return state;
     }
 
     private static GameState Print(GameState state)
@@ -98,10 +108,9 @@ namespace tcg
       attacker = state.CurrentPlayer;
       target = state.Players[0].Id != attacker.Id ? state.Players[0] : state.Players[1];
 
-      // what is state.Attaker and state.Target if action is drawCard or else
-      if (state.Attacker >= 0)
+      if (attacker.ActiveCards.Count > 0 && state.Attacker >= 0)
         attackerCard = attacker.ActiveCards[state.Attacker];
-      if (state.Target >= 0)
+      if (target.ActiveCards.Count > 0 && state.Target >= 0)
         targetCard = target.ActiveCards[state.Target];
     }
   }
