@@ -104,7 +104,64 @@ namespace tcgTests
     }
 
     [Test]
-    public void ProcessAndExecuteCommand()
+    public void ProcessAndExecuteCommand1()
+    {
+      Middleware mid1, mid2, midHost;
+      Host host;
+
+      (mid1, mid2, midHost, host) = InitializePreset();
+
+      GameState state = new GameState(
+        new Player[] {
+          new Player(
+            0,
+            new List<Card> { },
+            new List<Card> { },
+            new List<Card> { Card.DimonCard(), Card.DimonCard(), Card.DimonCard() }
+          ) ,
+          new Player(
+            1,
+            new List<Card> { },
+            new List<Card> { },
+            new List<Card> { Card.DimonCard(), Card.DimonCard(), Card.DimonCard() }
+          ) ,
+        }
+      );
+
+      host.SetGameState(state);
+
+      mid1.SendData("attack 1 2");
+
+
+      GameState stateExpected = new GameState(
+        new Player[] {
+          new Player(
+            0,
+            new List<Card> { },
+            new List<Card> { },
+            new List<Card> { Card.DimonCard(), ((Func<Card>)(() => {
+              var c = Card.DimonCard();
+              c.HP -= c.Attack;
+              return c;
+            }))() , Card.DimonCard() }
+          ) ,
+          new Player(
+            1,
+            new List<Card> { },
+            new List<Card> { },
+            new List<Card> { Card.DimonCard(), Card.DimonCard(), ((Func<Card>)(() => {
+              var c = Card.DimonCard();
+              c.HP -= c.Attack;
+              return c;
+            }))() }
+          ) ,
+        }
+      );
+
+      Assert.AreEqual(host.state, stateExpected);
+    }
+
+    public void ProcessAndExecuteCommand2()
     {
       Middleware mid1, mid2, midHost;
       Host host;

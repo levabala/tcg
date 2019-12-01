@@ -8,28 +8,8 @@ namespace tcg
 {
   static class ActionSet
   {
-    // private static Dictionary<ActionType, SpecifiedAction> actions0 = new Dictionary<ActionType, SpecifiedAction>()
-    // {
-
-    // };
-    // private static Dictionary<ActionType, SpecifiedAction<int>> actions1 = new Dictionary<ActionType, SpecifiedAction<int>>()
-    // {
-
-    // };
-    // // private static Dictionary<ActionType, SpecifiedAction<int, int>> actions2 = new Dictionary<ActionType, SpecifiedAction<int, int>>() {
-    // //   {ActionType.Attack, Attack}
-    // // };
-    // private static Dictionary<ActionType, SpecifiedAction<int, int, int>> actions3 = new Dictionary<ActionType, SpecifiedAction<int, int, int>>()
-    // {
-
-    // };
-
-
-
     public static Func<GameState, GameState> PackAction(GameState state, ActionType type, int[] args)
     {
-
-
       switch (args.Length)
       {
         case 0:
@@ -67,25 +47,9 @@ namespace tcg
       return state;
     };
 
-    private static GameState _Heal(GameState state, int[] args)
-    {
-      int playerIndexToHeal = (int)args[0];
-      int cardIndexToHeal = (int)args[1];
-      int amount = (int)args[2];
-
-      return Heal(state, playerIndexToHeal, cardIndexToHeal, amount);
-    }
-
-    private static GameState _Attack(GameState state, int[] args)
-    {
-      int attackerCardIndex = (int)args[0];
-      int targetCardIndex = (int)args[1];
-
-      return Attack(state, attackerCardIndex, targetCardIndex);
-    }
-
     static Dictionary<ActionType, Delegate> actions = new Dictionary<ActionType, Delegate>() {
-        {ActionType.Attack, Attack}
+        {ActionType.Attack, Attack},
+        {ActionType.Heal, Heal},
       };
   }
 }
