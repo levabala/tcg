@@ -133,6 +133,32 @@ namespace tcgTests
       mid1.SendData("attack 1 2");
 
 
+      GameState stateExpected = new GameState(
+        new Player[] {
+          new Player(
+            0,
+            new List<Card> { },
+            new List<Card> { },
+            new List<Card> { Card.DimonCard(), ((Func<Card>)(() => {
+              var c = Card.DimonCard();
+              c.HP -= c.Attack;
+              return c;
+            }))() , Card.DimonCard() }
+          ) ,
+          new Player(
+            1,
+            new List<Card> { },
+            new List<Card> { },
+            new List<Card> { Card.DimonCard(), Card.DimonCard(), ((Func<Card>)(() => {
+              var c = Card.DimonCard();
+              c.HP -= c.Attack;
+              return c;
+            }))() }
+          ) ,
+        }
+      );
+
+      Assert.AreEqual(host.state, stateExpected);
     }
   }
 }

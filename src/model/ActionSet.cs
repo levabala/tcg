@@ -25,23 +25,9 @@ namespace tcg
       var attackerCard = attacker.ActiveCards[attackerCardIndex];
       var targetCard = target.ActiveCards[targetCardIndex];
 
-      var newAttackerHP = attackerCard.HP - targetCard.Attack;
-      var newTargetHP = targetCard.HP - attackerCard.Attack;
-
       attackerCard.HP -= targetCard.Attack;
       targetCard.HP -= attackerCard.Attack;
 
-      // i suppose we can use Class instead of Struct for Card, Player etc
-      // to access them by link
-      // anyway, we are not goind to do completely immutable system
-      // so we can use mutations where it's the easiest strategy
-      attacker.ActiveCards[0] = new Card(attackerCard.ManaCost, newAttackerHP, attackerCard.Attack);
-      target.ActiveCards[0] = new Card(targetCard.ManaCost, newTargetHP, targetCard.Attack);
-
-      // we are returning "state" here to have an ability to chain actions
-      // GameState freshState = Action1(Action2(Action3(state)))
-      // maybe we need to build "pipe" function to make it more clear
-      // GameState freshState = Pipe(state, Action1, Action2, Action3)
       return state;
     }
   }

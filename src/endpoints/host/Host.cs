@@ -8,7 +8,7 @@ namespace tcg
 
   class Host
   {
-    GameState state;
+    public GameState state;
     readonly List<Middleware> playersMiddleware;
     readonly Middleware middleware;
     List<Action<int, string>> inputHadlers = new List<Action<int, string>>();
@@ -72,6 +72,7 @@ namespace tcg
 
       Dictionary<string, ActionType> commandsMap = new Dictionary<string, ActionType>() {
             {"attack", ActionType.Attack},
+            {"heal", ActionType.Heal},
             // ect...
           };
 

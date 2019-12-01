@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace tcg
 {
-    public enum ActionType
-    {
-        Attack,
-    }
+  public enum ActionType
+  {
+    Attack,
+    Heal,
+  }
 }
