@@ -10,6 +10,7 @@ namespace tcg
   {
     public int ManaCost { get; set; }
     public int HP { get; set; }
+    public int MaxHP { get; set; }
     public int Attack { get; set; }
     public Func<GameState, int[], GameState> StartAction { get; set; }
     public Func<GameState, int[], GameState> UseAction { get; set; }
@@ -20,6 +21,7 @@ namespace tcg
     {
       ManaCost = mana;
       HP = hp;
+      MaxHP = hp;
       Attack = attack;
 
       StartAction = startAction;

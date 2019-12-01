@@ -56,7 +56,7 @@ namespace tcg
         RootAction action = ParseInput(input);
         state = GameLoop.Execute(state, action);
       }
-      catch (Exception e)
+      catch (ArgumentException e)
       {
         return (ResponseType.Error, e.Message);
       }
@@ -82,12 +82,13 @@ namespace tcg
       if (!commandsMap.ContainsKey(commandName))
         throw new ArgumentException("Command name is not listed in commandsMap");
 
-      ActionType actionType = commandsMap[commandName];
-      Func<GameState, int[], GameState> justAnAction = ActionSet.actions[actionType];
-
       int[] args = chunks.Skip(1).Select(s => int.Parse(s)).ToArray();
 
-      return state => justAnAction(state, args);
+      ActionType actionType = commandsMap[commandName];
+      RootAction rootAction = ActionSet.PackAction(state, actionType, args);
+
+
+      return rootAction;
     }
 
     public void SetGameState(GameState state)

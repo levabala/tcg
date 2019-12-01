@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace tcg
 {
-  struct GameState
+  class GameState
   {
     public bool IsFinished { get; set; }
     public Player CurrentPlayer { get; set; }

@@ -41,6 +41,12 @@ namespace tcg
         int localI = i;
         Action<string> closure = input => handler(localI, input);
 
+        // var closure = ((Func<Action<string>>)(() =>
+        // {
+        //   int localI = i;
+        //   return input => handler(localI, input);
+        // }))();
+
         connectedMiddleware[i].onSendDataListeners.Add(closure);
       }
     }
