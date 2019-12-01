@@ -16,5 +16,19 @@ namespace tcg
       HP = hp;
       Mana = mana;
     }
+
+    public override bool Equals(object obj)
+    {
+      if (obj == null)
+        return false;
+
+      Hero hero2 = (Hero)obj;
+      return hero2.HP == this.HP && hero2.Mana == this.Mana;
+    }
+
+    public override int GetHashCode()
+    {
+      return base.GetHashCode();
+    }
   }
 }

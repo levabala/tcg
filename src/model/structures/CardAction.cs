@@ -9,7 +9,7 @@ namespace tcg
   class CardAction : PlayerAction
   {
     public int InHandIndex { get; set; }
-    public CardAction(int playerId, ActionType type, int inHandIndex) : base(playerId, type)
+    public CardAction(int playerId, Func<GameState, GameState> type, int inHandIndex) : base(playerId, type)
     {
       this.InHandIndex = inHandIndex;
     }

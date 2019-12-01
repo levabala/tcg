@@ -38,11 +38,8 @@ namespace tcg
     {
       for (int i = 0; i < connectedMiddleware.Count; i++)
       {
-        Action<string> closure = ((Func<Action<string>>)(() =>
-        {
-          int localI = i;
-          return input => handler(localI, input);
-        }))();
+        int localI = i;
+        Action<string> closure = input => handler(localI, input);
 
         connectedMiddleware[i].onSendDataListeners.Add(closure);
       }

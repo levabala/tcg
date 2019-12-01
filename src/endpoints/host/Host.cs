@@ -4,8 +4,11 @@ using System.Linq;
 
 namespace tcg
 {
+  using RootAction = Func<GameState, GameState>;
+
   class Host
   {
+    GameState state;
     readonly List<Middleware> playersMiddleware;
     readonly Middleware middleware;
     List<Action<int, string>> inputHadlers = new List<Action<int, string>>();
@@ -50,7 +53,8 @@ namespace tcg
     {
       try
       {
-        PlayerAction action = ParseInput(input);
+        RootAction action = ParseInput(input);
+        state = GameLoop.Execute(state, action);
       }
       catch (Exception e)
       {
@@ -60,17 +64,10 @@ namespace tcg
       return (ResponseType.Success, "success");
     }
 
-    private PlayerAction ParseInput(string input)
-    {
-      ActionType actionType = GetActionType(input);
-
-      return new PlayerAction(0, actionType);
-    }
-
-    private ActionType GetActionType(string input)
+    private RootAction ParseInput(string input)
     {
       // command example: "attack 1 3"
-      // scheme: "<COMMAND_NAME> <?ARG_1> <?ARG_2>"
+      // scheme: "<COMMAND_NAME> <?ARG_1> <?ARG_2> ... <?ARG_N>"
       // ? means optional parametr
 
       Dictionary<string, ActionType> commandsMap = new Dictionary<string, ActionType>() {
@@ -85,8 +82,16 @@ namespace tcg
         throw new ArgumentException("Command name is not listed in commandsMap");
 
       ActionType actionType = commandsMap[commandName];
+      Func<GameState, int[], GameState> justAnAction = ActionSet.actions[actionType];
 
-      return actionType;
+      int[] args = chunks.Skip(1).Select(s => int.Parse(s)).ToArray();
+
+      return state => justAnAction(state, args);
+    }
+
+    public void SetGameState(GameState state)
+    {
+      this.state = state;
     }
   }
 

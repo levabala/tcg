@@ -6,21 +6,36 @@ using System.Threading.Tasks;
 
 namespace tcg
 {
-    struct GameState
-    {
-        public bool IsFinished {get; set;}
-        public Player CurrentPlayer {get; set;}
-        public Player[] Players {get; set;}
-        public int Target {get; set;}
-        public int Attacker {get; set;}
+  struct GameState
+  {
+    public bool IsFinished { get; set; }
+    public Player CurrentPlayer { get; set; }
+    public Player[] Players { get; set; }
 
-        public GameState(Player currPlayer, Player[] players)
-        {
-            IsFinished = false;
-            CurrentPlayer = currPlayer;
-            Players = players;
-            Target = -2; // -1 is Hero, so -2
-            Attacker = -2;
-        }
+    public GameState(Player currentPlayer, Player[] players)
+    {
+      IsFinished = false;
+      CurrentPlayer = currentPlayer;
+      Players = players;
     }
+
+    public GameState(Player[] players) : this(players[0], players)
+    {
+
+    }
+
+    public override bool Equals(object obj)
+    {
+      if (obj == null)
+        return false;
+
+      GameState gameState = (GameState)obj;
+      return gameState.IsFinished == this.IsFinished && gameState.CurrentPlayer.Equals(this.CurrentPlayer) && Enumerable.SequenceEqual(gameState.Players, this.Players);
+    }
+
+    public override int GetHashCode()
+    {
+      return base.GetHashCode();
+    }
+  }
 }

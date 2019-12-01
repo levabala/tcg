@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace tcg
 {
-    class GameLoop
+  static class GameLoop
+  {
+    public static GameState Execute(GameState state, Func<GameState, GameState> action)
     {
-        public PlayerAction GenerateAction(int playerId, ActionType action)
-        {
-            return new PlayerAction(playerId, action);
-        }
+      return action(state);
     }
+  }
 }
