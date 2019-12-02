@@ -26,6 +26,16 @@ namespace tcg
                 )
             )
           },
+          {"Voodoo Doctor", () => new Card(
+              1,
+              1,
+              2,
+              (SpecifiedAction<int, int>)(
+                (GameState state, int playerIndex, int cardIndex, int[] remainArgs) =>
+                  ActionSet.Heal(state, playerIndex, cardIndex, 2, remainArgs)
+                )
+            )
+          },
         };
 
     // TODO: implement more cards 
