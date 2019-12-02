@@ -15,7 +15,17 @@ namespace tcg
                   ActionSet.Heal(state, playerIndex, cardIndex, 5, remainArgs)
                 )
             )
-          }
+          },
+          {"Ironforge Rifleman", () => new Card(
+              3,
+              2,
+              2,
+              startAction:(SpecifiedAction<int, int>)(
+                (GameState state, int playerIndex, int cardIndex, int[] remainArgs) =>
+                  ActionSet.DealDamage(state, playerIndex, cardIndex, 1, remainArgs)
+                )
+            )
+          },
         };
 
     // TODO: implement more cards 
