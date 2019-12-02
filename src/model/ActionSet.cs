@@ -27,6 +27,19 @@ namespace tcg
           return state => ((SpecifiedAction<int, int>)action)(state, actualArgs[0], actualArgs[1], remainArgs);
         case 3:
           return state => ((SpecifiedAction<int, int, int>)action)(state, actualArgs[0], actualArgs[1], actualArgs[2], remainArgs);
+        case 4:
+          return state => ((SpecifiedAction<int, int, int, int>)action)(state, actualArgs[0], actualArgs[1], actualArgs[2], actualArgs[3], remainArgs);
+        case 5:
+          return state => ((SpecifiedAction<int, int, int, int, int>)action)(state, actualArgs[0], actualArgs[1], actualArgs[2], actualArgs[3], actualArgs[4], remainArgs);
+        case 6:
+          return state => ((SpecifiedAction<int, int, int, int, int, int>)action)(state, actualArgs[0], actualArgs[1], actualArgs[2], actualArgs[3], actualArgs[4], actualArgs[5], remainArgs);
+        case 7:
+          return state => ((SpecifiedAction<int, int, int, int, int, int, int>)action)(state, actualArgs[0], actualArgs[1], actualArgs[2], actualArgs[3], actualArgs[4], actualArgs[5], actualArgs[6], remainArgs);
+        case 8:
+          return state => ((SpecifiedAction<int, int, int, int, int, int, int, int>)action)(state, actualArgs[0], actualArgs[1], actualArgs[2], actualArgs[3], actualArgs[4], actualArgs[5], actualArgs[6], actualArgs[7], remainArgs);
+        case 9:
+          return state => ((SpecifiedAction<int, int, int, int, int, int, int, int, int>)action)(state, actualArgs[0], actualArgs[1], actualArgs[2], actualArgs[3], actualArgs[4], actualArgs[5], actualArgs[6], actualArgs[7], actualArgs[8], remainArgs);
+
         default:
           throw new ArgumentException("Invalid number of args");
       }

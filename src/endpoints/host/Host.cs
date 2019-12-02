@@ -112,6 +112,16 @@ namespace tcg
           return 3;
         case SpecifiedAction<int, int, int, int> a:
           return 4;
+        case SpecifiedAction<int, int, int, int, int> a:
+          return 5;
+        case SpecifiedAction<int, int, int, int, int, int> a:
+          return 6;
+        case SpecifiedAction<int, int, int, int, int, int, int> a:
+          return 7;
+        case SpecifiedAction<int, int, int, int, int, int, int, int> a:
+          return 8;
+        case SpecifiedAction<int, int, int, int, int, int, int, int, int> a:
+          return 9;
         default:
           throw new ArgumentException("Cannot find a type of the action");
       }
