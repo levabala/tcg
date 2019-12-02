@@ -16,6 +16,7 @@ namespace tcg
       if (remainArgs == null)
         remainArgs = new int[0];
 
+      // TODO: extend cases up to 9 arguments
       switch (actualArgs.Length)
       {
         case 0:

@@ -11,5 +11,7 @@ namespace tcg
     abstract public void SendDataPersonally(string data, int receiverIndex);
     abstract public void AddInputHandler(Action<int, string> handler);
     abstract public void ConnectMiddleware(Middleware middleware);
+
+    // TODO: realize MiddlewareNetwork
   }
 }
