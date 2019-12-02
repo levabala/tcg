@@ -10,7 +10,7 @@ namespace tcgTests
   {
 
     [Test]
-    public void TakeCardTest()
+    public void DrawCardTest()
     {
       GameState state = new GameState(
         new Player[] {
@@ -29,7 +29,7 @@ namespace tcgTests
         }
       );
 
-      var takeCardAction = ActionSet.PackAction(state, ActionType.TakeCard);
+      var takeCardAction = ActionSet.PackAction(state, ActionType.DrawCard);
       takeCardAction(state);
 
       GameState stateExpected = new GameState(
@@ -52,7 +52,7 @@ namespace tcgTests
       Assert.AreEqual(state, stateExpected);
     }
 
-    public void DrawCardTest()
+    public void PlayCardTest()
     {
       GameState state = new GameState(
         new Player[] {
@@ -71,7 +71,7 @@ namespace tcgTests
         }
       );
 
-      var drawCardAction = ActionSet.PackAction(state, ActionType.DrawCard, new int[] { 0 });
+      var drawCardAction = ActionSet.PackAction(state, ActionType.PlayCard, new int[] { 0 });
       drawCardAction(state);
 
       GameState stateExpected = new GameState(

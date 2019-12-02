@@ -69,7 +69,7 @@ namespace tcg
       return state;
     };
 
-    public static SpecifiedAction TakeCard = (state, remainArguments) =>
+    public static SpecifiedAction DrawCard = (state, remainArguments) =>
     {
       var cardToTake = state.CurrentPlayer.CardSet[0];
       state.CurrentPlayer.CardSet.RemoveAt(0);
@@ -78,14 +78,14 @@ namespace tcg
       return state;
     };
 
-    public static SpecifiedAction<int> DrawCard = (state, cardIndex, remainArguments) =>
+    public static SpecifiedAction<int> PlayCard = (state, cardIndex, remainArguments) =>
     {
       var cardToDraw = state.CurrentPlayer.CardsInHand[cardIndex];
       state.CurrentPlayer.CardsInHand.RemoveAt(cardIndex);
       state.CurrentPlayer.ActiveCards.Add(cardToDraw);
 
-      if (cardToDraw.OnDrawAction != null)
-        PackActionAndExecute(state, cardToDraw.OnDrawAction, remainArguments);
+      if (cardToDraw.OnPlayAction != null)
+        PackActionAndExecute(state, cardToDraw.OnPlayAction, remainArguments);
 
       return state;
     };
@@ -107,8 +107,8 @@ namespace tcg
     public static Dictionary<ActionType, Delegate> Actions = new Dictionary<ActionType, Delegate>() {
         {ActionType.Attack, Attack},
         {ActionType.Heal, Heal},
-        {ActionType.TakeCard, TakeCard},
         {ActionType.DrawCard, DrawCard},
+        {ActionType.PlayCard, PlayCard},
         {ActionType.ProcessDeath, ProcessDeath},
       };
   }
