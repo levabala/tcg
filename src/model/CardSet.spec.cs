@@ -37,7 +37,7 @@ namespace tcgTests
 
       Host host = new Host(new MiddlewareLocal(), new List<Middleware> { });
       host.state = state;
-      host.ProcessInput(0, "draw 0 0 1");
+      host.ProcessInput(0, "play 0 0 1");
 
       GameState stateExpected = new GameState(
         new Player[] {
@@ -89,7 +89,7 @@ namespace tcgTests
 
       Host host = new Host(new MiddlewareLocal(), new List<Middleware> { });
       host.state = state;
-      host.ProcessInput(0, "draw 0 1 2");
+      host.ProcessInput(0, "play 0 1 2");
 
       GameState stateExpected = new GameState(
         new Player[] {
