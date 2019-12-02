@@ -128,7 +128,7 @@ namespace tcgTests
         }
       );
 
-      host.SetGameState(state);
+      host.state = state;
 
       mid1.SendData("attack 1 2");
 
@@ -185,7 +185,7 @@ namespace tcgTests
         }
       );
 
-      host.SetGameState(state);
+      host.state = state;
 
       mid1.SendData("attack 1 2");
 

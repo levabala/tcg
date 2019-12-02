@@ -10,7 +10,14 @@ namespace tcg
   {
     public static GameState Execute(GameState state, Func<GameState, GameState> action)
     {
-      return action(state);
+      // apply main action
+      action(state);
+
+      // apply death check action
+      var processDeathAction = ActionSet.PackAction(state, ActionType.ProcessDeath);
+      processDeathAction(state);
+
+      return state;
     }
   }
 }

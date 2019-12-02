@@ -8,24 +8,45 @@ namespace tcg
 {
   static class ActionSet
   {
-    public static Func<GameState, GameState> PackAction(GameState state, ActionType type, int[] args)
+    public static Func<GameState, GameState> PackAction(GameState state, Delegate action, int[] actualArgs = null, int[] remainArgs = null)
     {
-      switch (args.Length)
+      if (actualArgs == null)
+        actualArgs = new int[0];
+
+      if (remainArgs == null)
+        remainArgs = new int[0];
+
+      switch (actualArgs.Length)
       {
         case 0:
-          return state => ((SpecifiedAction)actions[type])(state);
+          return state => ((SpecifiedAction)action)(state, remainArgs);
         case 1:
-          return state => ((SpecifiedAction<int>)actions[type])(state, args[0]);
+          return state => ((SpecifiedAction<int>)action)(state, actualArgs[0], remainArgs);
         case 2:
-          return state => ((SpecifiedAction<int, int>)actions[type])(state, args[0], args[1]);
+          return state => ((SpecifiedAction<int, int>)action)(state, actualArgs[0], actualArgs[1], remainArgs);
         case 3:
-          return state => ((SpecifiedAction<int, int, int>)actions[type])(state, args[0], args[1], args[2]);
+          return state => ((SpecifiedAction<int, int, int>)action)(state, actualArgs[0], actualArgs[1], actualArgs[2], remainArgs);
         default:
           throw new ArgumentException("Invalid number of args");
       }
     }
 
-    public static SpecifiedAction<int, int> Attack = (GameState state, int attackerCardIndex, int targetCardIndex) =>
+    public static Func<GameState, GameState> PackAction(GameState state, ActionType type, int[] actualArgs = null, int[] remainArgs = null)
+    {
+      return PackAction(state, Actions[type], actualArgs, remainArgs);
+    }
+
+    public static GameState PackActionAndExecute(GameState state, ActionType type, int[] actualArgs = null, int[] remainArgs = null)
+    {
+      return PackAction(state, Actions[type], actualArgs, remainArgs)(state);
+    }
+
+    public static GameState PackActionAndExecute(GameState state, Delegate action, int[] actualArgs = null, int[] remainArgs = null)
+    {
+      return PackAction(state, action, actualArgs, remainArgs)(state);
+    }
+
+    public static SpecifiedAction<int, int> Attack = (GameState state, int attackerCardIndex, int targetCardIndex, int[] remainArguments) =>
     {
       var attacker = state.CurrentPlayer;
       var target = state.Players[0].Id != attacker.Id ? state.Players[0] : state.Players[1];
@@ -39,17 +60,55 @@ namespace tcg
       return state;
     };
 
-    public static SpecifiedAction<int, int, int> Heal = (state, playerIndex, cardIndex, healAmount) =>
+    public static SpecifiedAction<int, int, int> Heal = (state, playerIndex, cardIndex, healAmount, remainArguments) =>
     {
-      Card card = state.Players[playerIndex].CardInHand[cardIndex];
+      Card card = state.Players[playerIndex].ActiveCards[cardIndex];
       card.HP = Math.Min(card.HP + healAmount, card.MaxHP);
 
       return state;
     };
 
-    static Dictionary<ActionType, Delegate> actions = new Dictionary<ActionType, Delegate>() {
+    public static SpecifiedAction TakeCard = (state, remainArguments) =>
+    {
+      var cardToTake = state.CurrentPlayer.CardSet[0];
+      state.CurrentPlayer.CardSet.RemoveAt(0);
+      state.CurrentPlayer.CardsInHand.Add(cardToTake);
+
+      return state;
+    };
+
+    public static SpecifiedAction<int> DrawCard = (state, cardIndex, remainArguments) =>
+    {
+      var cardToDraw = state.CurrentPlayer.CardsInHand[cardIndex];
+      state.CurrentPlayer.CardsInHand.RemoveAt(cardIndex);
+      state.CurrentPlayer.ActiveCards.Add(cardToDraw);
+
+      if (cardToDraw.OnDrawAction != null)
+        PackActionAndExecute(state, cardToDraw.OnDrawAction, remainArguments);
+
+      return state;
+    };
+
+    public static SpecifiedAction ProcessDeath = (state, _) =>
+    {
+      foreach (Player p in state.Players)
+      {
+        List<Card> cardsToRemove = new List<Card>();
+        p.ActiveCards.ForEach(card => { if (card.HP <= 0) cardsToRemove.Add(card); });
+
+        foreach (Card c in cardsToRemove)
+          p.ActiveCards.Remove(c);
+      }
+
+      return state;
+    };
+
+    public static Dictionary<ActionType, Delegate> Actions = new Dictionary<ActionType, Delegate>() {
         {ActionType.Attack, Attack},
         {ActionType.Heal, Heal},
+        {ActionType.TakeCard, TakeCard},
+        {ActionType.DrawCard, DrawCard},
+        {ActionType.ProcessDeath, ProcessDeath},
       };
   }
 }

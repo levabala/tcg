@@ -10,5 +10,8 @@ namespace tcg
   {
     Attack,
     Heal,
+    TakeCard,
+    DrawCard,
+    ProcessDeath
   }
 }

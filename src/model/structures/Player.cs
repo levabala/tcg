@@ -12,7 +12,7 @@ namespace tcg
 
     public Hero Hero { get; set; }
     public List<Card> CardSet { get; set; }
-    public List<Card> CardInHand { get; set; }
+    public List<Card> CardsInHand { get; set; }
     public List<Card> ActiveCards { get; set; }
 
     public Player(int id, List<Card> cardSet, List<Card> cardsInHand, List<Card> activeCards)
@@ -21,7 +21,7 @@ namespace tcg
       Hero = new Hero(10, 10);
 
       this.CardSet = cardSet;
-      this.CardInHand = cardsInHand;
+      this.CardsInHand = cardsInHand;
       this.ActiveCards = activeCards;
     }
 
@@ -31,7 +31,7 @@ namespace tcg
       Hero = new Hero(10, 10);
 
       this.CardSet = new List<Card>();
-      this.CardInHand = new List<Card>();
+      this.CardsInHand = new List<Card>();
       this.ActiveCards = new List<Card>();
     }
 
@@ -41,7 +41,7 @@ namespace tcg
         return false;
 
       Player player2 = (Player)obj;
-      return player2.Id == this.Id && player2.Hero.Equals(this.Hero) && Enumerable.SequenceEqual(player2.CardSet, this.CardSet) && Enumerable.SequenceEqual(player2.ActiveCards, this.ActiveCards) && Enumerable.SequenceEqual(player2.CardInHand, this.CardInHand);
+      return player2.Id == this.Id && player2.Hero.Equals(this.Hero) && Enumerable.SequenceEqual(player2.CardSet, this.CardSet) && Enumerable.SequenceEqual(player2.ActiveCards, this.ActiveCards) && Enumerable.SequenceEqual(player2.CardsInHand, this.CardsInHand);
     }
 
     public override int GetHashCode()

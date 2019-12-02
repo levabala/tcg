@@ -73,6 +73,7 @@ namespace tcg
       Dictionary<string, ActionType> commandsMap = new Dictionary<string, ActionType>() {
             {"attack", ActionType.Attack},
             {"heal", ActionType.Heal},
+            {"draw", ActionType.DrawCard}
             // ect...
           };
 
@@ -82,18 +83,38 @@ namespace tcg
       if (!commandsMap.ContainsKey(commandName))
         throw new ArgumentException("Command name is not listed in commandsMap");
 
-      int[] args = chunks.Skip(1).Select(s => int.Parse(s)).ToArray();
-
       ActionType actionType = commandsMap[commandName];
-      RootAction rootAction = ActionSet.PackAction(state, actionType, args);
+
+      int[] args = chunks.Skip(1).Select(s => int.Parse(s)).ToArray();
+      int actualArgsCount = GetActualArgsCount(actionType);
+
+      int[] actualArgs = args.Take(actualArgsCount).ToArray();
+      int[] remainArgs = args.Skip(actualArgsCount).Take(args.Length - actualArgsCount).ToArray();
+
+      RootAction rootAction = ActionSet.PackAction(state, actionType, actualArgs, remainArgs);
 
 
       return rootAction;
     }
 
-    public void SetGameState(GameState state)
+    private int GetActualArgsCount(ActionType actionType)
     {
-      this.state = state;
+      Delegate action = ActionSet.Actions[actionType];
+      switch (action)
+      {
+        case SpecifiedAction a:
+          return 0;
+        case SpecifiedAction<int> a:
+          return 1;
+        case SpecifiedAction<int, int> a:
+          return 2;
+        case SpecifiedAction<int, int, int> a:
+          return 3;
+        case SpecifiedAction<int, int, int, int> a:
+          return 4;
+        default:
+          throw new ArgumentException("Cannot find a type of the action");
+      }
     }
   }
 
