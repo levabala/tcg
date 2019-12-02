@@ -65,5 +65,10 @@ namespace tcg
     {
       return new Card(-5, 10, -1);
     }
+
+    static public Card LevCard()
+    {
+      return new Card(100, 100, 100);
+    }
   }
 }
