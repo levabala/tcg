@@ -27,6 +27,19 @@ namespace tcg
           return state => ((SpecifiedAction<int, int>)action)(state, actualArgs[0], actualArgs[1], remainArgs);
         case 3:
           return state => ((SpecifiedAction<int, int, int>)action)(state, actualArgs[0], actualArgs[1], actualArgs[2], remainArgs);
+        case 4:
+          return state => ((SpecifiedAction<int, int, int, int>)action)(state, actualArgs[0], actualArgs[1], actualArgs[2], actualArgs[3], remainArgs);
+        case 5:
+          return state => ((SpecifiedAction<int, int, int, int, int>)action)(state, actualArgs[0], actualArgs[1], actualArgs[2], actualArgs[3], actualArgs[4], remainArgs);
+        case 6:
+          return state => ((SpecifiedAction<int, int, int, int, int, int>)action)(state, actualArgs[0], actualArgs[1], actualArgs[2], actualArgs[3], actualArgs[4], actualArgs[5], remainArgs);
+        case 7:
+          return state => ((SpecifiedAction<int, int, int, int, int, int, int>)action)(state, actualArgs[0], actualArgs[1], actualArgs[2], actualArgs[3], actualArgs[4], actualArgs[5], actualArgs[6], remainArgs);
+        case 8:
+          return state => ((SpecifiedAction<int, int, int, int, int, int, int, int>)action)(state, actualArgs[0], actualArgs[1], actualArgs[2], actualArgs[3], actualArgs[4], actualArgs[5], actualArgs[6], actualArgs[7], remainArgs);
+        case 9:
+          return state => ((SpecifiedAction<int, int, int, int, int, int, int, int, int>)action)(state, actualArgs[0], actualArgs[1], actualArgs[2], actualArgs[3], actualArgs[4], actualArgs[5], actualArgs[6], actualArgs[7], actualArgs[8], remainArgs);
+
         default:
           throw new ArgumentException("Invalid number of args");
       }
@@ -69,7 +82,7 @@ namespace tcg
       return state;
     };
 
-    public static SpecifiedAction TakeCard = (state, remainArguments) =>
+    public static SpecifiedAction DrawCard = (state, remainArguments) =>
     {
       var cardToTake = state.CurrentPlayer.CardSet[0];
       state.CurrentPlayer.CardSet.RemoveAt(0);
@@ -78,14 +91,14 @@ namespace tcg
       return state;
     };
 
-    public static SpecifiedAction<int> DrawCard = (state, cardIndex, remainArguments) =>
+    public static SpecifiedAction<int> PlayCard = (state, cardIndex, remainArguments) =>
     {
       var cardToDraw = state.CurrentPlayer.CardsInHand[cardIndex];
       state.CurrentPlayer.CardsInHand.RemoveAt(cardIndex);
       state.CurrentPlayer.ActiveCards.Add(cardToDraw);
 
-      if (cardToDraw.OnDrawAction != null)
-        PackActionAndExecute(state, cardToDraw.OnDrawAction, remainArguments);
+      if (cardToDraw.OnPlayAction != null)
+        PackActionAndExecute(state, cardToDraw.OnPlayAction, remainArguments);
 
       return state;
     };
@@ -107,8 +120,8 @@ namespace tcg
     public static Dictionary<ActionType, Delegate> Actions = new Dictionary<ActionType, Delegate>() {
         {ActionType.Attack, Attack},
         {ActionType.Heal, Heal},
-        {ActionType.TakeCard, TakeCard},
         {ActionType.DrawCard, DrawCard},
+        {ActionType.PlayCard, PlayCard},
         {ActionType.ProcessDeath, ProcessDeath},
       };
   }
