@@ -12,6 +12,7 @@ namespace tcg
     public int HP { get; set; }
     public int MaxHP { get; set; }
     public int Attack { get; set; }
+    public bool IsSleeping { get; set; }
     public Delegate OnPlayAction { get; set; }
     public Delegate OnUseAction { get; set; }
     public Delegate OnDieAction { get; set; }
@@ -23,6 +24,7 @@ namespace tcg
       HP = hp;
       MaxHP = hp;
       Attack = attack;
+      IsSleeping = true;
 
       OnPlayAction = startAction;
       OnUseAction = useAction;
@@ -45,6 +47,7 @@ namespace tcg
       return card2.ManaCost == this.ManaCost &&
         card2.HP == this.HP &&
         card2.Attack == this.Attack &&
+        card2.IsSleeping == this.IsSleeping &&
         (card2.OnPlayAction == this.OnPlayAction || card2.OnPlayAction.Equals(this.OnPlayAction)) &&
         (card2.OnDieAction == this.OnDieAction || card2.OnDieAction.Equals(this.OnDieAction)) &&
         (card2.OnUseAction == this.OnUseAction || card2.OnUseAction.Equals(this.OnUseAction)) &&
