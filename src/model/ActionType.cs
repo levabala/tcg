@@ -12,6 +12,7 @@ namespace tcg
     Heal,
     DrawCard,
     PlayCard,
-    ProcessDeath
+    ProcessDeath,
+    DealDamage
   }
 }

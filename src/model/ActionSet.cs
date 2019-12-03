@@ -82,6 +82,14 @@ namespace tcg
       return state;
     };
 
+    public static SpecifiedAction<int, int, int> DealDamage = (state, playerIndex, cardIndex, damageAmount, remainArguments) =>
+    {
+      Card card = state.Players[playerIndex].ActiveCards[cardIndex];
+      card.HP = card.HP - damageAmount;
+
+      return state;
+    };
+
     public static SpecifiedAction DrawCard = (state, remainArguments) =>
     {
       var cardToTake = state.CurrentPlayer.CardSet[0];
@@ -123,6 +131,7 @@ namespace tcg
         {ActionType.DrawCard, DrawCard},
         {ActionType.PlayCard, PlayCard},
         {ActionType.ProcessDeath, ProcessDeath},
+        {ActionType.DealDamage, DealDamage}
       };
   }
 }
