@@ -16,7 +16,6 @@ namespace tcg
       if (remainArgs == null)
         remainArgs = new int[0];
 
-      // TODO: extend cases up to 9 arguments
       switch (actualArgs.Length)
       {
         case 0:
@@ -97,27 +96,27 @@ namespace tcg
 
     public static SpecifiedAction DrawCard = (state, remainArguments) =>
     {
-      var cardToTake = state.CurrentPlayer.CardSet[0];
+      var cardToDraw = state.CurrentPlayer.CardSet[0];
       state.CurrentPlayer.CardSet.RemoveAt(0);
-      state.CurrentPlayer.CardsInHand.Add(cardToTake);
+      state.CurrentPlayer.CardsInHand.Add(cardToDraw);
 
       return state;
     };
 
     public static SpecifiedAction<int> PlayCard = (state, cardIndex, remainArguments) =>
     {
-      var cardToDraw = state.CurrentPlayer.CardsInHand[cardIndex];
-      if (cardToDraw.ManaCost > state.CurrentPlayer.Hero.Mana)
+      var cardToPlay = state.CurrentPlayer.CardsInHand[cardIndex];
+      if (cardToPlay.ManaCost > state.CurrentPlayer.Hero.Mana)
       {
         throw new ArgumentException("You don't have enough mana");
       }
       state.CurrentPlayer.CardsInHand.RemoveAt(cardIndex);
-      state.CurrentPlayer.ActiveCards.Add(cardToDraw);
+      state.CurrentPlayer.ActiveCards.Add(cardToPlay);
 
-      state.CurrentPlayer.Hero.Mana -= cardToDraw.ManaCost;
+      state.CurrentPlayer.Hero.Mana -= cardToPlay.ManaCost;
 
-      if (cardToDraw.OnPlayAction != null)
-        PackActionAndExecute(state, cardToDraw.OnPlayAction, remainArguments);
+      if (cardToPlay.OnPlayAction != null)
+        PackActionAndExecute(state, cardToPlay.OnPlayAction, remainArguments);
 
       return state;
     };
@@ -157,7 +156,6 @@ namespace tcg
 
       return state;
     };
-
     public static Dictionary<ActionType, Delegate> Actions = new Dictionary<ActionType, Delegate>() {
         {ActionType.Attack, Attack},
         {ActionType.Heal, Heal},
