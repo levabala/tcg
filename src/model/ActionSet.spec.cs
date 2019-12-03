@@ -67,7 +67,7 @@ namespace tcgTests
             1,
             new List<Card> { },
             new List<Card> { },
-            new List<Card> {  }
+            new List<Card> { }
           ) ,
         }
       );
@@ -75,10 +75,16 @@ namespace tcgTests
       var drawCardAction = ActionSet.PackAction(state, ActionType.PlayCard, new int[] { 0 });
       drawCardAction(state);
 
+
       GameState stateExpected = new GameState(
         new Player[] {
           new Player(
             0,
+            ((Func<Hero>)(() => {
+              var hero = Hero.CommonHero();
+              hero.Mana -= Card.DimonCard().ManaCost;
+              return hero;
+            }))(),
             new List<Card> { },
             new List<Card> { },
             new List<Card> { Card.DimonCard(), Card.DimonCard(), Card.DimonCard() }
@@ -88,9 +94,10 @@ namespace tcgTests
             new List<Card> { },
             new List<Card> { },
             new List<Card> { }
-          ) ,
+          ),
         }
       );
+
       Assert.AreEqual(state, stateExpected);
     }
 
@@ -109,7 +116,7 @@ namespace tcgTests
             1,
             new List<Card> { },
             new List<Card> { },
-            new List<Card> {  }
+            new List<Card> { }
           ) ,
         }
       );

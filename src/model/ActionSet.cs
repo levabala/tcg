@@ -109,6 +109,8 @@ namespace tcg
       state.CurrentPlayer.CardsInHand.RemoveAt(cardIndex);
       state.CurrentPlayer.ActiveCards.Add(cardToDraw);
 
+      state.CurrentPlayer.Hero.Mana -= cardToDraw.ManaCost;
+
       if (cardToDraw.OnPlayAction != null)
         PackActionAndExecute(state, cardToDraw.OnPlayAction, remainArguments);
 
