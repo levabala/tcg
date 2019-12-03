@@ -232,13 +232,13 @@ namespace tcgTests
             0,
             new List<Card> { },
             new List<Card> { },
-            new List<Card> { Card.DimonCard(), Card.DimonCard(), Card.DimonCard() }
+            new List<Card> { Card.DimonCard()}
           ) ,
           new Player(
             1,
             new List<Card> { },
             new List<Card> { },
-            new List<Card> { Card.DimonCard(), Card.DimonCard(), Card.DimonCard() }
+            new List<Card> { }
           ) ,
         }
       );
@@ -254,13 +254,17 @@ namespace tcgTests
             0,
             new List<Card> { },
             new List<Card> { },
-            new List<Card> { Card.DimonCard(), Card.DimonCard(), Card.DimonCard() }
+            new List<Card> { ((Func<Card>)(() => {
+              var c = Card.DimonCard();
+              c.IsSleeping = false;
+              return c;
+            }))() }
           ) ,
           new Player(
             1,
             new List<Card> { },
             new List<Card> { },
-            new List<Card> { Card.DimonCard(), Card.DimonCard(), Card.DimonCard() }
+            new List<Card> { }
           ) ,
         }
       );

@@ -15,5 +15,6 @@ namespace tcg
     ProcessDeath,
     DealDamage,
     EndTurn,
+    WakeUpCreatures,
   }
 }

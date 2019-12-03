@@ -68,6 +68,11 @@ namespace tcg
       var attackerCard = attacker.ActiveCards[attackerCardIndex];
       var targetCard = target.ActiveCards[targetCardIndex];
 
+      if (attackerCard.IsSleeping)
+      {
+        throw new ArgumentException("This creature is sleeping");
+      }
+
       attackerCard.HP -= targetCard.Attack;
       targetCard.HP -= attackerCard.Attack;
 
@@ -133,9 +138,22 @@ namespace tcg
 
     public static SpecifiedAction EndTurn = (state, _) =>
     {
-      // only if 2 players
+      // only for 2 players
       var notCurrentPlayer = state.Players[0].Id != state.CurrentPlayer.Id ? state.Players[0] : state.Players[1];
       state.CurrentPlayer = notCurrentPlayer;
+
+      var wakeUpAction = ActionSet.PackAction(state, ActionType.WakeUpCreatures);
+      wakeUpAction(state);
+
+      return state;
+    };
+
+    public static SpecifiedAction WakeUpCreatures = (state, _) =>
+    {
+      foreach (var player in state.Players)
+      {
+        player.ActiveCards.ForEach(card => card.IsSleeping = false);
+      }
 
       return state;
     };
@@ -147,7 +165,8 @@ namespace tcg
         {ActionType.PlayCard, PlayCard},
         {ActionType.ProcessDeath, ProcessDeath},
         {ActionType.DealDamage, DealDamage},
-        {ActionType.EndTurn, EndTurn}
+        {ActionType.EndTurn, EndTurn},
+        {ActionType.WakeUpCreatures, WakeUpCreatures}
       };
   }
 }

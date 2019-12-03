@@ -61,7 +61,9 @@ namespace tcg
 
     static public Card DimonCard()
     {
-      return new Card(-5, 1, -1);
+      var card = new Card(-5, 1, -1);
+      card.IsSleeping = false;
+      return card;
     }
 
     static public Card DimonStrongCard()
