@@ -13,6 +13,7 @@ namespace tcg
     DrawCard,
     PlayCard,
     ProcessDeath,
-    DealDamage
+    DealDamage,
+    EndTurn,
   }
 }

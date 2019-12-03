@@ -73,7 +73,8 @@ namespace tcg
       Dictionary<string, ActionType> commandsMap = new Dictionary<string, ActionType>() {
             {"attack", ActionType.Attack},
             {"heal", ActionType.Heal},
-            {"play", ActionType.PlayCard}
+            {"play", ActionType.PlayCard},
+            {"end", ActionType.EndTurn}
             // ect...
           };
 

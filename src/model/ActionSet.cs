@@ -125,13 +125,23 @@ namespace tcg
       return state;
     };
 
+    public static SpecifiedAction EndTurn = (state, _) =>
+    {
+      // only if 2 players
+      var notCurrentPlayer = state.Players[0].Id != state.CurrentPlayer.Id ? state.Players[0] : state.Players[1];
+      state.CurrentPlayer = notCurrentPlayer;
+
+      return state;
+    };
+
     public static Dictionary<ActionType, Delegate> Actions = new Dictionary<ActionType, Delegate>() {
         {ActionType.Attack, Attack},
         {ActionType.Heal, Heal},
         {ActionType.DrawCard, DrawCard},
         {ActionType.PlayCard, PlayCard},
         {ActionType.ProcessDeath, ProcessDeath},
-        {ActionType.DealDamage, DealDamage}
+        {ActionType.DealDamage, DealDamage},
+        {ActionType.EndTurn, EndTurn}
       };
   }
 }

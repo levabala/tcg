@@ -217,5 +217,57 @@ namespace tcgTests
 
       Assert.AreEqual(host.state, stateExpected);
     }
+
+    [Test]
+    public void ProcessAndExecuteCommandEndTurn()
+    {
+      Middleware mid1, mid2, midHost;
+      Host host;
+
+      (mid1, mid2, midHost, host) = InitializePreset();
+
+      GameState state = new GameState(
+        new Player[] {
+          new Player(
+            0,
+            new List<Card> { },
+            new List<Card> { },
+            new List<Card> { Card.DimonCard(), Card.DimonCard(), Card.DimonCard() }
+          ) ,
+          new Player(
+            1,
+            new List<Card> { },
+            new List<Card> { },
+            new List<Card> { Card.DimonCard(), Card.DimonCard(), Card.DimonCard() }
+          ) ,
+        }
+      );
+
+      host.state = state;
+
+      mid1.SendData("end");
+
+
+      GameState stateExpected = new GameState(
+        new Player[] {
+          new Player(
+            0,
+            new List<Card> { },
+            new List<Card> { },
+            new List<Card> { Card.DimonCard(), Card.DimonCard(), Card.DimonCard() }
+          ) ,
+          new Player(
+            1,
+            new List<Card> { },
+            new List<Card> { },
+            new List<Card> { Card.DimonCard(), Card.DimonCard(), Card.DimonCard() }
+          ) ,
+        }
+      );
+
+      stateExpected.CurrentPlayer = stateExpected.Players[1];
+
+      Assert.AreEqual(host.state, stateExpected);
+    }
   }
 }
