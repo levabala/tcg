@@ -91,8 +91,31 @@ namespace tcgTests
           ) ,
         }
       );
-
       Assert.AreEqual(state, stateExpected);
+    }
+
+    [Test]
+    public void PlayCardWithNotEnoughManaTest()
+    {
+      GameState state = new GameState(
+        new Player[] {
+          new Player(
+            0,
+            new List<Card> { },
+            new List<Card> { Card.LevCard() },
+            new List<Card> { Card.DimonCard(), Card.DimonCard() }
+          ) ,
+          new Player(
+            1,
+            new List<Card> { },
+            new List<Card> { },
+            new List<Card> {  }
+          ) ,
+        }
+      );
+
+      var drawCardAction = ActionSet.PackAction(state, ActionType.PlayCard, new int[] { 0 });
+      Assert.Catch(() => drawCardAction(state), "You don't have enough mana");
     }
 
     [Test]

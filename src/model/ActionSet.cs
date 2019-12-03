@@ -102,6 +102,10 @@ namespace tcg
     public static SpecifiedAction<int> PlayCard = (state, cardIndex, remainArguments) =>
     {
       var cardToDraw = state.CurrentPlayer.CardsInHand[cardIndex];
+      if (cardToDraw.ManaCost > state.CurrentPlayer.Hero.Mana)
+      {
+        throw new ArgumentException("You don't have enough mana");
+      }
       state.CurrentPlayer.CardsInHand.RemoveAt(cardIndex);
       state.CurrentPlayer.ActiveCards.Add(cardToDraw);
 

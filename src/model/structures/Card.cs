@@ -70,5 +70,10 @@ namespace tcg
     {
       return new Card(100, 100, 100);
     }
+
+    static public Card LevBudgetCard()
+    {
+      return new Card(10, 100, 100);
+    }
   }
 }
