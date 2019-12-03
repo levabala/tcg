@@ -75,7 +75,6 @@ namespace tcgTests
       var drawCardAction = ActionSet.PackAction(state, ActionType.PlayCard, new int[] { 0 });
       drawCardAction(state);
 
-
       GameState stateExpected = new GameState(
         new Player[] {
           new Player(
@@ -102,7 +101,7 @@ namespace tcgTests
     }
 
     [Test]
-    public void PlayCardWithNotEnoughManaTest()
+    public void PlayCardWithNotEnoughManaTest1()
     {
       GameState state = new GameState(
         new Player[] {
@@ -122,6 +121,31 @@ namespace tcgTests
       );
 
       var drawCardAction = ActionSet.PackAction(state, ActionType.PlayCard, new int[] { 0 });
+      Assert.Catch(() => drawCardAction(state), "You don't have enough mana");
+    }
+
+    [Test]
+    public void PlayCardWithNotEnoughManaTest2()
+    {
+      GameState state = new GameState(
+        new Player[] {
+          new Player(
+            0,
+            new List<Card> { },
+            new List<Card> { Card.LevBudgetCard(), Card.LevBudgetCard() },
+            new List<Card> { }
+          ) ,
+          new Player(
+            1,
+            new List<Card> { },
+            new List<Card> { },
+            new List<Card> { }
+          ) ,
+        }
+      );
+
+      var drawCardAction = ActionSet.PackAction(state, ActionType.PlayCard, new int[] { 0 });
+      drawCardAction(state);
       Assert.Catch(() => drawCardAction(state), "You don't have enough mana");
     }
 
