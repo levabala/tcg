@@ -8,6 +8,7 @@ namespace tcg
 {
   class Card
   {
+    public string Name { get; set; }
     public int ManaCost { get; set; }
     public int HP { get; set; }
     public int MaxHP { get; set; }
@@ -18,8 +19,9 @@ namespace tcg
     public Delegate OnDieAction { get; set; }
     public Delegate OnOtherAttackAction { get; set; }
 
-    public Card(int mana, int hp, int attack, bool isSleeping = true, Delegate startAction = null, Delegate useAction = null, Delegate dieAction = null, Delegate attackProcessAction = null)
+    public Card(string name, int mana, int hp, int attack, bool isSleeping = true, Delegate startAction = null, Delegate useAction = null, Delegate dieAction = null, Delegate attackProcessAction = null)
     {
+      Name = name;
       ManaCost = mana;
       HP = hp;
       MaxHP = hp;
@@ -39,7 +41,7 @@ namespace tcg
 
     public override string ToString()
     {
-      return String.Format("Mana cost: {0}, HP: {1}, Attack: {2}", ManaCost, HP, Attack);
+      return String.Format("{0} Mana cost: {1}, HP: {2}, Attack: {3}\n",Name, ManaCost, HP, Attack);
     }
 
     public override bool Equals(object obj)
@@ -66,24 +68,24 @@ namespace tcg
 
     static public Card DimonCard()
     {
-      var card = new Card(-5, 1, -1);
+      var card = new Card("Dimon", -5, 1, -1);
       card.IsSleeping = false;
       return card;
     }
 
     static public Card DimonStrongCard()
     {
-      return new Card(-5, 10, -1);
+      return new Card("Strong Dimon", -5, 10, -1);
     }
 
     static public Card LevCard()
     {
-      return new Card(100, 100, 100);
+      return new Card("Lev", 100, 100, 100);
     }
 
     static public Card LevBudgetCard()
     {
-      return new Card(10, 100, 100);
+      return new Card("Budget Lev", 10, 100, 100);
     }
   }
 }

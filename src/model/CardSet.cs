@@ -7,6 +7,7 @@ namespace tcg
   {
     public static Dictionary<string, Func<Card>> Cards = new Dictionary<string, Func<Card>>() {
           {"Flash Heal", () => new Card(
+              "Flash Heal",
               1,
               0,
               0,
@@ -17,6 +18,7 @@ namespace tcg
             )
           },
           {"Ironforge Rifleman", () => new Card(
+              "Ironforge Rifleman",
               3,
               2,
               2,
@@ -27,6 +29,7 @@ namespace tcg
             )
           },
           {"Voodoo Doctor", () => new Card(
+              "Voodoo Doctor",
               1,
               1,
               2,
