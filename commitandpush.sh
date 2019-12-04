@@ -1,4 +1,4 @@
-branch=${2:-master}
+branch=${2:-development}
 
 git add ./
 git commit -m "$1"
