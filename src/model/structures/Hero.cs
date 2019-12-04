@@ -30,5 +30,10 @@ namespace tcg
     {
       return base.GetHashCode();
     }
+
+    static public Hero CommonHero()
+    {
+      return new Hero(10, 10);
+    }
   }
 }

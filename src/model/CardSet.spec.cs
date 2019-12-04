@@ -43,6 +43,11 @@ namespace tcgTests
         new Player[] {
           new Player(
             0,
+            ((Func<Hero>)(() => {
+              var hero = Hero.CommonHero();
+              hero.Mana -= testingCardGenerator().ManaCost;
+              return hero;
+            }))(),
             new List<Card> { },
             new List<Card> { },
             new List<Card> { Card.DimonCard(), ((Func<Card>)(() => {
@@ -95,6 +100,11 @@ namespace tcgTests
         new Player[] {
           new Player(
             0,
+            ((Func<Hero>)(() => {
+              var hero = Hero.CommonHero();
+              hero.Mana -= testingCardGenerator().ManaCost;
+              return hero;
+            }))(),
             new List<Card> { },
             new List<Card> { },
             new List<Card> { Card.DimonCard(), testingCardGenerator()}
@@ -151,6 +161,11 @@ namespace tcgTests
         new Player[] {
           new Player(
             0,
+            ((Func<Hero>)(() => {
+              var hero = Hero.CommonHero();
+              hero.Mana -= testingCardGenerator().ManaCost;
+              return hero;
+            }))(),
             new List<Card> { },
             new List<Card> { },
             new List<Card> { Card.DimonCard(), ((Func<Card>)(() => {

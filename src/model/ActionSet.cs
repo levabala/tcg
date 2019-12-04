@@ -8,7 +8,7 @@ namespace tcg
 {
   static class ActionSet
   {
-    public static Func<GameState, GameState> PackAction(GameState state, Delegate action, int[] actualArgs = null, int[] remainArgs = null)
+    public static Action<GameState> PackAction(GameState state, Delegate action, int[] actualArgs = null, int[] remainArgs = null)
     {
       if (actualArgs == null)
         actualArgs = new int[0];
@@ -16,7 +16,6 @@ namespace tcg
       if (remainArgs == null)
         remainArgs = new int[0];
 
-      // TODO: extend cases up to 9 arguments
       switch (actualArgs.Length)
       {
         case 0:
@@ -45,19 +44,19 @@ namespace tcg
       }
     }
 
-    public static Func<GameState, GameState> PackAction(GameState state, ActionType type, int[] actualArgs = null, int[] remainArgs = null)
+    public static Action<GameState> PackAction(GameState state, ActionType type, int[] actualArgs = null, int[] remainArgs = null)
     {
       return PackAction(state, Actions[type], actualArgs, remainArgs);
     }
 
-    public static GameState PackActionAndExecute(GameState state, ActionType type, int[] actualArgs = null, int[] remainArgs = null)
+    public static void PackActionAndExecute(GameState state, ActionType type, int[] actualArgs = null, int[] remainArgs = null)
     {
-      return PackAction(state, Actions[type], actualArgs, remainArgs)(state);
+      PackAction(state, Actions[type], actualArgs, remainArgs)(state);
     }
 
-    public static GameState PackActionAndExecute(GameState state, Delegate action, int[] actualArgs = null, int[] remainArgs = null)
+    public static void PackActionAndExecute(GameState state, Delegate action, int[] actualArgs = null, int[] remainArgs = null)
     {
-      return PackAction(state, action, actualArgs, remainArgs)(state);
+      PackAction(state, action, actualArgs, remainArgs)(state);
     }
 
     public static SpecifiedAction<int, int> Attack = (GameState state, int attackerCardIndex, int targetCardIndex, int[] remainArguments) =>
@@ -67,6 +66,11 @@ namespace tcg
 
       var attackerCard = attacker.ActiveCards[attackerCardIndex];
       var targetCard = target.ActiveCards[targetCardIndex];
+
+      if (attackerCard.IsSleeping)
+      {
+        throw new ArgumentException("This creature is sleeping");
+      }
 
       attackerCard.HP -= targetCard.Attack;
       targetCard.HP -= attackerCard.Attack;
@@ -92,21 +96,27 @@ namespace tcg
 
     public static SpecifiedAction DrawCard = (state, remainArguments) =>
     {
-      var cardToTake = state.CurrentPlayer.CardSet[0];
+      var cardToDraw = state.CurrentPlayer.CardSet[0];
       state.CurrentPlayer.CardSet.RemoveAt(0);
-      state.CurrentPlayer.CardsInHand.Add(cardToTake);
+      state.CurrentPlayer.CardsInHand.Add(cardToDraw);
 
       return state;
     };
 
     public static SpecifiedAction<int> PlayCard = (state, cardIndex, remainArguments) =>
     {
-      var cardToDraw = state.CurrentPlayer.CardsInHand[cardIndex];
+      var cardToPlay = state.CurrentPlayer.CardsInHand[cardIndex];
+      if (cardToPlay.ManaCost > state.CurrentPlayer.Hero.Mana)
+      {
+        throw new ArgumentException("You don't have enough mana");
+      }
       state.CurrentPlayer.CardsInHand.RemoveAt(cardIndex);
-      state.CurrentPlayer.ActiveCards.Add(cardToDraw);
+      state.CurrentPlayer.ActiveCards.Add(cardToPlay);
 
-      if (cardToDraw.OnPlayAction != null)
-        PackActionAndExecute(state, cardToDraw.OnPlayAction, remainArguments);
+      state.CurrentPlayer.Hero.Mana -= cardToPlay.ManaCost;
+
+      if (cardToPlay.OnPlayAction != null)
+        PackActionAndExecute(state, cardToPlay.OnPlayAction, remainArguments);
 
       return state;
     };
@@ -125,13 +135,36 @@ namespace tcg
       return state;
     };
 
+    public static SpecifiedAction EndTurn = (state, _) =>
+    {
+      // only for 2 players
+      var notCurrentPlayer = state.Players[0].Id != state.CurrentPlayer.Id ? state.Players[0] : state.Players[1];
+      state.CurrentPlayer = notCurrentPlayer;
+
+      var wakeUpAction = ActionSet.PackAction(state, ActionType.WakeUpCreatures);
+      wakeUpAction(state);
+
+      return state;
+    };
+
+    public static SpecifiedAction WakeUpAllCreatures = (state, _) =>
+    {
+      foreach (var player in state.Players)
+      {
+        player.ActiveCards.ForEach(card => card.IsSleeping = false);
+      }
+
+      return state;
+    };
     public static Dictionary<ActionType, Delegate> Actions = new Dictionary<ActionType, Delegate>() {
         {ActionType.Attack, Attack},
         {ActionType.Heal, Heal},
         {ActionType.DrawCard, DrawCard},
         {ActionType.PlayCard, PlayCard},
         {ActionType.ProcessDeath, ProcessDeath},
-        {ActionType.DealDamage, DealDamage}
+        {ActionType.DealDamage, DealDamage},
+        {ActionType.EndTurn, EndTurn},
+        {ActionType.WakeUpCreatures, WakeUpAllCreatures}
       };
   }
 }
