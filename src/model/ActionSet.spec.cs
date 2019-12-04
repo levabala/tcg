@@ -50,6 +50,7 @@ namespace tcgTests
       );
 
       Assert.AreEqual(state, stateExpected);
+      Assert.Fail();
     }
 
     [Test]
