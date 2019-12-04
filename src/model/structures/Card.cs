@@ -18,19 +18,24 @@ namespace tcg
     public Delegate OnDieAction { get; set; }
     public Delegate OnOtherAttackAction { get; set; }
 
-    public Card(int mana, int hp, int attack, Delegate startAction = null, Delegate useAction = null, Delegate dieAction = null, Delegate attackProcessAction = null)
+    public Card(int mana, int hp, int attack, bool isSleeping = true, Delegate startAction = null, Delegate useAction = null, Delegate dieAction = null, Delegate attackProcessAction = null)
     {
       ManaCost = mana;
       HP = hp;
       MaxHP = hp;
       Attack = attack;
-      IsSleeping = true;
+      IsSleeping = isSleeping;
 
       OnPlayAction = startAction;
       OnUseAction = useAction;
       OnDieAction = dieAction;
       OnOtherAttackAction = attackProcessAction;
     }
+
+    // public Card(int mana, int hp, int attack, bool isSleeping, Delegate startAction = null, Delegate useAction = null, Delegate dieAction = null, Delegate attackProcessAction = null) : this(mana, hp, attack)
+    // {
+    //   IsSleeping = isSleeping;
+    // } 
 
     public override string ToString()
     {

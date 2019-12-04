@@ -147,7 +147,7 @@ namespace tcg
       return state;
     };
 
-    public static SpecifiedAction WakeUpCreatures = (state, _) =>
+    public static SpecifiedAction WakeUpAllCreatures = (state, _) =>
     {
       foreach (var player in state.Players)
       {
@@ -164,7 +164,7 @@ namespace tcg
         {ActionType.ProcessDeath, ProcessDeath},
         {ActionType.DealDamage, DealDamage},
         {ActionType.EndTurn, EndTurn},
-        {ActionType.WakeUpCreatures, WakeUpCreatures}
+        {ActionType.WakeUpCreatures, WakeUpAllCreatures}
       };
   }
 }
