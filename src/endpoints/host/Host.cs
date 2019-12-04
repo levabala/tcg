@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace tcg
 {
-  using RootAction = Func<GameState, GameState>;
+  using RootAction = Action<GameState>;
 
   class Host
   {
@@ -124,6 +124,7 @@ namespace tcg
         case SpecifiedAction<int, int, int, int, int, int, int, int, int> a:
           return 9;
         default:
+
           throw new ArgumentException("Cannot find a type of the action");
       }
     }

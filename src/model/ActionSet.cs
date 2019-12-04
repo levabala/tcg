@@ -8,7 +8,7 @@ namespace tcg
 {
   static class ActionSet
   {
-    public static Func<GameState, GameState> PackAction(GameState state, Delegate action, int[] actualArgs = null, int[] remainArgs = null)
+    public static Action<GameState> PackAction(GameState state, Delegate action, int[] actualArgs = null, int[] remainArgs = null)
     {
       if (actualArgs == null)
         actualArgs = new int[0];
@@ -44,19 +44,19 @@ namespace tcg
       }
     }
 
-    public static Func<GameState, GameState> PackAction(GameState state, ActionType type, int[] actualArgs = null, int[] remainArgs = null)
+    public static Action<GameState> PackAction(GameState state, ActionType type, int[] actualArgs = null, int[] remainArgs = null)
     {
       return PackAction(state, Actions[type], actualArgs, remainArgs);
     }
 
-    public static GameState PackActionAndExecute(GameState state, ActionType type, int[] actualArgs = null, int[] remainArgs = null)
+    public static void PackActionAndExecute(GameState state, ActionType type, int[] actualArgs = null, int[] remainArgs = null)
     {
-      return PackAction(state, Actions[type], actualArgs, remainArgs)(state);
+      PackAction(state, Actions[type], actualArgs, remainArgs)(state);
     }
 
-    public static GameState PackActionAndExecute(GameState state, Delegate action, int[] actualArgs = null, int[] remainArgs = null)
+    public static void PackActionAndExecute(GameState state, Delegate action, int[] actualArgs = null, int[] remainArgs = null)
     {
-      return PackAction(state, action, actualArgs, remainArgs)(state);
+      PackAction(state, action, actualArgs, remainArgs)(state);
     }
 
     public static SpecifiedAction<int, int> Attack = (GameState state, int attackerCardIndex, int targetCardIndex, int[] remainArguments) =>

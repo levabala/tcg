@@ -10,7 +10,7 @@ namespace tcg
               1,
               0,
               0,
-              (SpecifiedAction<int, int>)(
+              startAction:(SpecifiedAction<int, int>)(
                 (GameState state, int playerIndex, int cardIndex, int[] remainArgs) =>
                   ActionSet.Heal(state, playerIndex, cardIndex, 5, remainArgs)
                 )
@@ -30,7 +30,7 @@ namespace tcg
               1,
               1,
               2,
-              (SpecifiedAction<int, int>)(
+              startAction:(SpecifiedAction<int, int>)(
                 (GameState state, int playerIndex, int cardIndex, int[] remainArgs) =>
                   ActionSet.Heal(state, playerIndex, cardIndex, 2, remainArgs)
                 )

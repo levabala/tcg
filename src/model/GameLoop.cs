@@ -8,7 +8,7 @@ namespace tcg
 {
   static class GameLoop
   {
-    public static GameState Execute(GameState state, Func<GameState, GameState> action)
+    public static GameState Execute(GameState state, Action<GameState> action)
     {
       // apply main action
       action(state);
