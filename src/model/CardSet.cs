@@ -5,8 +5,15 @@ namespace tcg
 {
   static class CardSet
   {
-    public static Dictionary<CardType, Func<Card>> Cards = new Dictionary<CardType, Func<Card>>() {
-          {CardType.FlashHeal, () => new Card(
+    public enum CardName
+    {
+      FlashHeal,
+      IronforgeRifleman,
+      VoodooDoctor,
+    }
+
+    public static Dictionary<CardName, Func<Card>> Cards = new Dictionary<CardName, Func<Card>>() {
+          {CardName.FlashHeal, () => new Card(
               1,
               0,
               0,
@@ -16,7 +23,7 @@ namespace tcg
                 )
             )
           },
-          {CardType.IronforgeRifleman, () => new Card(
+          {CardName.IronforgeRifleman, () => new Card(
               3,
               2,
               2,
@@ -26,7 +33,7 @@ namespace tcg
                 )
             )
           },
-          {CardType.VoodooDoctor, () => new Card(
+          {CardName.VoodooDoctor, () => new Card(
               1,
               1,
               2,
@@ -37,7 +44,5 @@ namespace tcg
             )
           },
         };
-
-    // TODO: implement more cards 
   }
 }

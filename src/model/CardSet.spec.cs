@@ -11,7 +11,7 @@ namespace tcgTests
     [Test]
     public void FlashHealTest()
     {
-      Func<Card> testingCardGenerator = CardSet.Cards[CardType.FlashHeal];
+      Func<Card> testingCardGenerator = CardSet.Cards[CardSet.CardName.FlashHeal];
 
       GameState state = new GameState(
         new Player[] {
@@ -73,7 +73,7 @@ namespace tcgTests
     [Test]
     public void IronforgeRiflemanTest()
     {
-      Func<Card> testingCardGenerator = CardSet.Cards[CardType.IronforgeRifleman];
+      Func<Card> testingCardGenerator = CardSet.Cards[CardSet.CardName.IronforgeRifleman];
 
       GameState state = new GameState(
         new Player[] {
@@ -129,7 +129,7 @@ namespace tcgTests
     [Test]
     public void VoodooDoctorTest()
     {
-      Func<Card> testingCardGenerator = CardSet.Cards[CardType.VoodooDoctor];
+      Func<Card> testingCardGenerator = CardSet.Cards[CardSet.CardName.VoodooDoctor];
 
       GameState state = new GameState(
         new Player[] {
