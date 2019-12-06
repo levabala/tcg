@@ -261,7 +261,12 @@ namespace tcgTests
             0,
             new List<Card> { },
             new List<Card> {  },
-            new List<Card> {  }
+            new List<Card> { ((Func<Card>)(() => {
+              var card = Card.DimonCard();
+              // Init StrongDimon damaged for 6 points
+              card.HP -= testingCardGenerator().Attack;
+              return card;
+            }))() }
           ) ,
           new Player(
             1,
