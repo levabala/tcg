@@ -48,10 +48,14 @@ namespace tcg
               6,
               0,
               0,
-              startAction:new List<Delegate>() {(SpecifiedAction<int, int>)(
-                (GameState state, int playerIndex, int cardIndex, int[] remainArgs) =>
-                  ActionSet.DealDamage(state, playerIndex, cardIndex, 1, remainArgs)
-                )}
+              startAction:new List<Delegate>() {
+                (SpecifiedAction<int, int>)((GameState state, int playerIndex, int cardIndex, int[] remainArgs) =>
+                  ActionSet.DealDamage(state, playerIndex, cardIndex, 5, remainArgs)
+                ),
+                (SpecifiedAction)((GameState state, int[] remainArgs) =>
+                  ActionSet.DrawCard(state, remainArgs)
+                ),
+              }
             )
           },
         };

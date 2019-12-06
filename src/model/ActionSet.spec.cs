@@ -79,14 +79,14 @@ namespace tcgTests
         new Player[] {
           new Player(
             0,
+            new List<Card> { },
+            new List<Card> { },
+            new List<Card> { Card.DimonCard(), Card.DimonCard(), Card.DimonCard() },
             ((Func<Hero>)(() => {
               var hero = Hero.CommonHero();
               hero.Mana -= Card.DimonCard().ManaCost;
               return hero;
-            }))(),
-            new List<Card> { },
-            new List<Card> { },
-            new List<Card> { Card.DimonCard(), Card.DimonCard(), Card.DimonCard() }
+            }))()
           ) ,
           new Player(
             1,

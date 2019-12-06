@@ -93,9 +93,6 @@ namespace tcg
 
       return rootAction;
     }
-
-
-
   }
 
   enum ResponseType
