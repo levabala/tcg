@@ -203,5 +203,81 @@ namespace tcgTests
 
       Assert.AreEqual(state, stateExpected);
     }
+
+    [Test]
+    public void TauntTest1()
+    {
+      Func<Card> testingCardGenerator = CardSet.Cards[CardSet.CardName.GoldshireFootman];
+
+      GameState state = new GameState(
+        new Player[] {
+          new Player(
+            0,
+            new List<Card> { },
+            new List<Card> {  },
+            new List<Card> { Card.DimonCard() }
+          ) ,
+          new Player(
+            1,
+            new List<Card> { },
+            new List<Card> { },
+            new List<Card> {Card.LevBudgetCard(), testingCardGenerator() }
+          ) ,
+        }
+      );
+
+      var attackCardAction = ActionSet.PackAction(state, ActionType.Attack, new int[] { 0, 0 });
+      Assert.Catch(() => attackCardAction(state), "You cannot attack this creature because of this player has a taunt");
+    }
+
+    [Test]
+    public void TauntTest2()
+    {
+      Func<Card> testingCardGenerator = CardSet.Cards[CardSet.CardName.GoldshireFootman];
+
+      GameState state = new GameState(
+        new Player[] {
+          new Player(
+            0,
+            new List<Card> { },
+            new List<Card> {  },
+            new List<Card> { Card.DimonCard() }
+          ) ,
+          new Player(
+            1,
+            new List<Card> { },
+            new List<Card> { },
+            new List<Card> {Card.LevBudgetCard(), testingCardGenerator() }
+          ) ,
+        }
+      );
+
+      var attackCardAction = ActionSet.PackAction(state, ActionType.Attack, new int[] { 0, 1 });
+      attackCardAction(state);
+
+      GameState stateExpected = new GameState(
+        new Player[] {
+          new Player(
+            0,
+            new List<Card> { },
+            new List<Card> {  },
+            new List<Card> {  }
+          ) ,
+          new Player(
+            1,
+            new List<Card> { },
+            new List<Card> { },
+            new List<Card> {Card.LevBudgetCard(), ((Func<Card>)(() => {
+              var card = testingCardGenerator();
+              // Init StrongDimon damaged for 6 points
+              card.HP -= Card.DimonCard().Attack;
+              return card;
+            }))() }
+          ) ,
+        }
+      );
+
+      Assert.AreEqual(state, stateExpected);
+    }
   }
 }

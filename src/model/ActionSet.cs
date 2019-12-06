@@ -103,16 +103,21 @@ namespace tcg
 
     public static SpecifiedAction<int, int> Attack = (GameState state, int attackerCardIndex, int targetCardIndex, int[] remainArguments) =>
     {
-      var attacker = state.CurrentPlayer;
-      var target = state.Players[0].Id != attacker.Id ? state.Players[0] : state.Players[1];
+      var attackerPlayer = state.CurrentPlayer;
+      var targetPlayer = state.Players[0].Id != attackerPlayer.Id ? state.Players[0] : state.Players[1];
 
-      var attackerCard = attacker.ActiveCards[attackerCardIndex];
-      var targetCard = target.ActiveCards[targetCardIndex];
+      var attackerCard = attackerPlayer.ActiveCards[attackerCardIndex];
+      var targetCard = targetPlayer.ActiveCards[targetCardIndex];
 
       if (attackerCard.IsSleeping)
       {
         throw new ArgumentException("This creature is sleeping");
       }
+
+      if (!targetCard.IsTaunt)
+        foreach (Card c in targetPlayer.ActiveCards)
+          if (c.IsTaunt)
+            throw new ArgumentException("You cannot attack this creature because of this player has a taunt");
 
       attackerCard.HP -= targetCard.Attack;
       targetCard.HP -= attackerCard.Attack;

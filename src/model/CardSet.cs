@@ -10,7 +10,8 @@ namespace tcg
       FlashHeal,
       IronforgeRifleman,
       VoodooDoctor,
-      Starfire
+      Starfire,
+      GoldshireFootman
     }
 
     public static Dictionary<CardName, Func<Card>> Cards = new Dictionary<CardName, Func<Card>>() {
@@ -56,6 +57,13 @@ namespace tcg
                   ActionSet.DrawCard(state, remainArgs)
                 ),
               }
+            )
+          },
+          {CardName.GoldshireFootman, () => new Card(
+              1,
+              2,
+              1,
+              isTaunt: true
             )
           },
         };

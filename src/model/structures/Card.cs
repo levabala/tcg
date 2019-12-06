@@ -13,18 +13,19 @@ namespace tcg
     public int MaxHP { get; set; }
     public int Attack { get; set; }
     public bool IsSleeping { get; set; }
+    public bool IsTaunt { get; set; }
     public List<Delegate> OnStartAction { get; set; } = new List<Delegate>();
     public List<Delegate> OnUseAction { get; set; } = new List<Delegate>();
     public List<Delegate> OnDieAction { get; set; } = new List<Delegate>();
-    public List<Delegate> OnOtherAttackAction { get; set; } = new List<Delegate>();
 
-    public Card(int mana, int hp, int attack, bool isSleeping = true, List<Delegate> startAction = null, List<Delegate> useAction = null, List<Delegate> dieAction = null, List<Delegate> attackProcessAction = null)
+    public Card(int mana, int hp, int attack, bool isSleeping = true, bool isTaunt = false, List<Delegate> startAction = null, List<Delegate> useAction = null, List<Delegate> dieAction = null)
     {
       ManaCost = mana;
       HP = hp;
       MaxHP = hp;
       Attack = attack;
       IsSleeping = isSleeping;
+      IsTaunt = isTaunt;
 
       if (startAction != null)
         OnStartAction = startAction;
@@ -32,8 +33,6 @@ namespace tcg
         OnUseAction = useAction;
       if (dieAction != null)
         OnDieAction = dieAction;
-      if (attackProcessAction != null)
-        OnOtherAttackAction = attackProcessAction;
     }
 
     public override string ToString()
@@ -52,10 +51,10 @@ namespace tcg
         card2.HP == this.HP &&
         card2.Attack == this.Attack &&
         card2.IsSleeping == this.IsSleeping &&
+        card2.IsTaunt == this.IsTaunt &&
         (card2.OnStartAction.SequenceEqual(this.OnStartAction)) &&
         (card2.OnDieAction.SequenceEqual(this.OnDieAction)) &&
-        (card2.OnUseAction.SequenceEqual(this.OnUseAction)) &&
-        (card2.OnOtherAttackAction.SequenceEqual(this.OnOtherAttackAction));
+        (card2.OnUseAction.SequenceEqual(this.OnUseAction));
     }
 
     public override int GetHashCode()
