@@ -5,42 +5,67 @@ namespace tcg
 {
   static class CardSet
   {
-    public static Dictionary<string, Func<Card>> Cards = new Dictionary<string, Func<Card>>() {
-          {"Flash Heal", () => new Card(
-              "Flash Heal",
+    public enum CardName
+    {
+      FlashHeal,
+      IronforgeRifleman,
+      VoodooDoctor,
+      Starfire,
+      GoldshireFootman
+    }
+
+    public static Dictionary<CardName, Func<Card>> Cards = new Dictionary<CardName, Func<Card>>() {
+          {CardName.FlashHeal, () => new Card(
               1,
               0,
               0,
-              startAction:(SpecifiedAction<int, int>)(
+              startAction: new List<Delegate>() {(SpecifiedAction<int, int>)(
                 (GameState state, int playerIndex, int cardIndex, int[] remainArgs) =>
                   ActionSet.Heal(state, playerIndex, cardIndex, 5, remainArgs)
-                )
+                )}
             )
           },
-          {"Ironforge Rifleman", () => new Card(
-              "Ironforge Rifleman",
+          {CardName.IronforgeRifleman, () => new Card(
               3,
               2,
               2,
-              startAction:(SpecifiedAction<int, int>)(
+              startAction:new List<Delegate>() {(SpecifiedAction<int, int>)(
                 (GameState state, int playerIndex, int cardIndex, int[] remainArgs) =>
                   ActionSet.DealDamage(state, playerIndex, cardIndex, 1, remainArgs)
-                )
+                )}
             )
           },
-          {"Voodoo Doctor", () => new Card(
-              "Voodoo Doctor",
+          {CardName.VoodooDoctor, () => new Card(
               1,
               1,
               2,
-              startAction:(SpecifiedAction<int, int>)(
+              startAction:new List<Delegate>() {(SpecifiedAction<int, int>)(
                 (GameState state, int playerIndex, int cardIndex, int[] remainArgs) =>
                   ActionSet.Heal(state, playerIndex, cardIndex, 2, remainArgs)
-                )
+                )}
+            )
+          },
+          {CardName.Starfire, () => new Card(
+              6,
+              0,
+              0,
+              startAction:new List<Delegate>() {
+                (SpecifiedAction<int, int>)((GameState state, int playerIndex, int cardIndex, int[] remainArgs) =>
+                  ActionSet.DealDamage(state, playerIndex, cardIndex, 5, remainArgs)
+                ),
+                (SpecifiedAction)((GameState state, int[] remainArgs) =>
+                  ActionSet.DrawCard(state, remainArgs)
+                ),
+              }
+            )
+          },
+          {CardName.GoldshireFootman, () => new Card(
+              1,
+              2,
+              1,
+              isTaunt: true
             )
           },
         };
-
-    // TODO: implement more cards 
   }
 }

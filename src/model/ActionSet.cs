@@ -8,69 +8,116 @@ namespace tcg
 {
   static class ActionSet
   {
-    public static Action<GameState> PackAction(GameState state, Delegate action, int[] actualArgs = null, int[] remainArgs = null)
+    static private (int[], int[]) SplitArgs(int[] args, int actualArgsCount)
     {
-      if (actualArgs == null)
-        actualArgs = new int[0];
+      int[] actualArgs = args.Take(actualArgsCount).ToArray();
+      int[] remainArgs = args.Skip(actualArgsCount).Take(args.Length - actualArgsCount).ToArray();
 
-      if (remainArgs == null)
-        remainArgs = new int[0];
+      return (actualArgs, remainArgs);
+    }
 
-      switch (actualArgs.Length)
+    static private int GetActualArgsCount(Delegate action)
+    {
+      switch (action)
+      {
+        case SpecifiedAction a:
+          return 0;
+        case SpecifiedAction<int> a:
+          return 1;
+        case SpecifiedAction<int, int> a:
+          return 2;
+        case SpecifiedAction<int, int, int> a:
+          return 3;
+        case SpecifiedAction<int, int, int, int> a:
+          return 4;
+        case SpecifiedAction<int, int, int, int, int> a:
+          return 5;
+        case SpecifiedAction<int, int, int, int, int, int> a:
+          return 6;
+        case SpecifiedAction<int, int, int, int, int, int, int> a:
+          return 7;
+        case SpecifiedAction<int, int, int, int, int, int, int, int> a:
+          return 8;
+        case SpecifiedAction<int, int, int, int, int, int, int, int, int> a:
+          return 9;
+        default:
+
+          throw new ArgumentException("Cannot find a type of the action");
+      }
+    }
+
+    public static Action<GameState> PackAction(GameState state, Delegate action, int[] args = null)
+    {
+      if (args == null)
+        args = new int[0];
+
+      int[] actualArgs, remainArgs;
+      int actualArgsCount = GetActualArgsCount(action);
+      switch (actualArgsCount)
       {
         case 0:
+          (actualArgs, remainArgs) = ActionSet.SplitArgs(args, 0);
           return state => ((SpecifiedAction)action)(state, remainArgs);
         case 1:
-          return state => ((SpecifiedAction<int>)action)(state, actualArgs[0], remainArgs);
+          (actualArgs, remainArgs) = ActionSet.SplitArgs(args, 1);
+          return state => ((SpecifiedAction<int>)action)(state, args[0], remainArgs);
         case 2:
-          return state => ((SpecifiedAction<int, int>)action)(state, actualArgs[0], actualArgs[1], remainArgs);
+          (actualArgs, remainArgs) = ActionSet.SplitArgs(args, 2);
+          return state => ((SpecifiedAction<int, int>)action)(state, args[0], args[1], remainArgs);
         case 3:
-          return state => ((SpecifiedAction<int, int, int>)action)(state, actualArgs[0], actualArgs[1], actualArgs[2], remainArgs);
+          (actualArgs, remainArgs) = ActionSet.SplitArgs(args, 3);
+          return state => ((SpecifiedAction<int, int, int>)action)(state, args[0], args[1], args[2], remainArgs);
         case 4:
-          return state => ((SpecifiedAction<int, int, int, int>)action)(state, actualArgs[0], actualArgs[1], actualArgs[2], actualArgs[3], remainArgs);
-        case 5:
-          return state => ((SpecifiedAction<int, int, int, int, int>)action)(state, actualArgs[0], actualArgs[1], actualArgs[2], actualArgs[3], actualArgs[4], remainArgs);
-        case 6:
-          return state => ((SpecifiedAction<int, int, int, int, int, int>)action)(state, actualArgs[0], actualArgs[1], actualArgs[2], actualArgs[3], actualArgs[4], actualArgs[5], remainArgs);
-        case 7:
-          return state => ((SpecifiedAction<int, int, int, int, int, int, int>)action)(state, actualArgs[0], actualArgs[1], actualArgs[2], actualArgs[3], actualArgs[4], actualArgs[5], actualArgs[6], remainArgs);
-        case 8:
-          return state => ((SpecifiedAction<int, int, int, int, int, int, int, int>)action)(state, actualArgs[0], actualArgs[1], actualArgs[2], actualArgs[3], actualArgs[4], actualArgs[5], actualArgs[6], actualArgs[7], remainArgs);
-        case 9:
-          return state => ((SpecifiedAction<int, int, int, int, int, int, int, int, int>)action)(state, actualArgs[0], actualArgs[1], actualArgs[2], actualArgs[3], actualArgs[4], actualArgs[5], actualArgs[6], actualArgs[7], actualArgs[8], remainArgs);
+          (actualArgs, remainArgs) = ActionSet.SplitArgs(args, 4);
+          return state => ((SpecifiedAction<int, int, int, int>)action)(state, args[0], args[1], args[2], args[3], remainArgs);
+        // case 5:
+        //   return state => ((SpecifiedAction<int, int, int, int, int>)action)(state, args[0], args[1], args[2], args[3], args[4], remainArgs);
+        // case 6:
+        //   return state => ((SpecifiedAction<int, int, int, int, int, int>)action)(state, args[0], args[1], args[2], args[3], args[4], args[5], remainArgs);
+        // case 7:
+        //   return state => ((SpecifiedAction<int, int, int, int, int, int, int>)action)(state, args[0], args[1], args[2], args[3], args[4], args[5], args[6], remainArgs);
+        // case 8:
+        //   return state => ((SpecifiedAction<int, int, int, int, int, int, int, int>)action)(state, args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], remainArgs);
+        // case 9:
+        //   return state => ((SpecifiedAction<int, int, int, int, int, int, int, int, int>)action)(state, args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8], remainArgs);
 
         default:
           throw new ArgumentException("Invalid number of args");
       }
     }
 
-    public static Action<GameState> PackAction(GameState state, ActionType type, int[] actualArgs = null, int[] remainArgs = null)
+    public static Action<GameState> PackAction(GameState state, ActionType type, int[] args = null)
     {
-      return PackAction(state, Actions[type], actualArgs, remainArgs);
+      return PackAction(state, Actions[type], args);
     }
 
-    public static void PackActionAndExecute(GameState state, ActionType type, int[] actualArgs = null, int[] remainArgs = null)
+    public static void PackActionAndExecute(GameState state, ActionType type, int[] args = null)
     {
-      PackAction(state, Actions[type], actualArgs, remainArgs)(state);
+      PackAction(state, Actions[type], args)(state);
     }
 
-    public static void PackActionAndExecute(GameState state, Delegate action, int[] actualArgs = null, int[] remainArgs = null)
+    public static void PackActionAndExecute(GameState state, Delegate action, int[] args = null)
     {
-      PackAction(state, action, actualArgs, remainArgs)(state);
+      PackAction(state, action, args)(state);
     }
 
     public static SpecifiedAction<int, int> Attack = (GameState state, int attackerCardIndex, int targetCardIndex, int[] remainArguments) =>
     {
-      var attacker = state.CurrentPlayer;
-      var target = state.Players[0].Id != attacker.Id ? state.Players[0] : state.Players[1];
+      var attackerPlayer = state.CurrentPlayer;
+      var targetPlayer = state.Players[0].Id != attackerPlayer.Id ? state.Players[0] : state.Players[1];
 
-      var attackerCard = attacker.ActiveCards[attackerCardIndex];
-      var targetCard = target.ActiveCards[targetCardIndex];
+      var attackerCard = attackerPlayer.ActiveCards[attackerCardIndex];
+      var targetCard = targetPlayer.ActiveCards[targetCardIndex];
 
       if (attackerCard.IsSleeping)
       {
         throw new ArgumentException("This creature is sleeping");
       }
+
+      if (!targetCard.IsTaunt)
+        foreach (Card c in targetPlayer.ActiveCards)
+          if (c.IsTaunt)
+            throw new ArgumentException("You cannot attack this creature because of this player has a taunt");
 
       attackerCard.HP -= targetCard.Attack;
       targetCard.HP -= attackerCard.Attack;
@@ -115,8 +162,8 @@ namespace tcg
 
       state.CurrentPlayer.Hero.Mana -= cardToPlay.ManaCost;
 
-      if (cardToPlay.OnPlayAction != null)
-        PackActionAndExecute(state, cardToPlay.OnPlayAction, remainArguments);
+      foreach (Delegate action in cardToPlay.OnStartAction)
+        PackActionAndExecute(state, action, remainArguments);
 
       return state;
     };
