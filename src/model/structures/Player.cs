@@ -25,7 +25,7 @@ namespace tcg
       this.ActiveCards = activeCards;
     }
 
-    public Player(int id, Hero Hero, List<Card> cardSet, List<Card> cardsInHand, List<Card> activeCards) : this(id, cardSet, cardsInHand, activeCards)
+    public Player(int id, List<Card> cardSet, List<Card> cardsInHand, List<Card> activeCards, Hero Hero) : this(id, cardSet, cardsInHand, activeCards)
     {
       this.Hero = Hero;
     }
