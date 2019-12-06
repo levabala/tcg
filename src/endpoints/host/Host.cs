@@ -87,47 +87,15 @@ namespace tcg
       ActionType actionType = commandsMap[commandName];
 
       int[] args = chunks.Skip(1).Select(s => int.Parse(s)).ToArray();
-      int actualArgsCount = GetActualArgsCount(actionType);
 
-      int[] actualArgs = args.Take(actualArgsCount).ToArray();
-      int[] remainArgs = args.Skip(actualArgsCount).Take(args.Length - actualArgsCount).ToArray();
-
-      RootAction rootAction = ActionSet.PackAction(state, actionType, actualArgs, remainArgs);
+      RootAction rootAction = ActionSet.PackAction(state, actionType, args);
 
 
       return rootAction;
     }
 
-    private int GetActualArgsCount(ActionType actionType)
-    {
-      Delegate action = ActionSet.Actions[actionType];
-      switch (action)
-      {
-        case SpecifiedAction a:
-          return 0;
-        case SpecifiedAction<int> a:
-          return 1;
-        case SpecifiedAction<int, int> a:
-          return 2;
-        case SpecifiedAction<int, int, int> a:
-          return 3;
-        case SpecifiedAction<int, int, int, int> a:
-          return 4;
-        case SpecifiedAction<int, int, int, int, int> a:
-          return 5;
-        case SpecifiedAction<int, int, int, int, int, int> a:
-          return 6;
-        case SpecifiedAction<int, int, int, int, int, int, int> a:
-          return 7;
-        case SpecifiedAction<int, int, int, int, int, int, int, int> a:
-          return 8;
-        case SpecifiedAction<int, int, int, int, int, int, int, int, int> a:
-          return 9;
-        default:
 
-          throw new ArgumentException("Cannot find a type of the action");
-      }
-    }
+
   }
 
   enum ResponseType

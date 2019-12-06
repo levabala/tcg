@@ -13,12 +13,12 @@ namespace tcg
     public int MaxHP { get; set; }
     public int Attack { get; set; }
     public bool IsSleeping { get; set; }
-    public Delegate OnPlayAction { get; set; }
-    public Delegate OnUseAction { get; set; }
-    public Delegate OnDieAction { get; set; }
-    public Delegate OnOtherAttackAction { get; set; }
+    public List<Delegate> OnStartAction { get; set; } = new List<Delegate>();
+    public List<Delegate> OnUseAction { get; set; } = new List<Delegate>();
+    public List<Delegate> OnDieAction { get; set; } = new List<Delegate>();
+    public List<Delegate> OnOtherAttackAction { get; set; } = new List<Delegate>();
 
-    public Card(int mana, int hp, int attack, bool isSleeping = true, Delegate startAction = null, Delegate useAction = null, Delegate dieAction = null, Delegate attackProcessAction = null)
+    public Card(int mana, int hp, int attack, bool isSleeping = true, List<Delegate> startAction = null, List<Delegate> useAction = null, List<Delegate> dieAction = null, List<Delegate> attackProcessAction = null)
     {
       ManaCost = mana;
       HP = hp;
@@ -26,16 +26,15 @@ namespace tcg
       Attack = attack;
       IsSleeping = isSleeping;
 
-      OnPlayAction = startAction;
-      OnUseAction = useAction;
-      OnDieAction = dieAction;
-      OnOtherAttackAction = attackProcessAction;
+      if (startAction != null)
+        OnStartAction = startAction;
+      if (useAction != null)
+        OnUseAction = useAction;
+      if (dieAction != null)
+        OnDieAction = dieAction;
+      if (attackProcessAction != null)
+        OnOtherAttackAction = attackProcessAction;
     }
-
-    // public Card(int mana, int hp, int attack, bool isSleeping, Delegate startAction = null, Delegate useAction = null, Delegate dieAction = null, Delegate attackProcessAction = null) : this(mana, hp, attack)
-    // {
-    //   IsSleeping = isSleeping;
-    // } 
 
     public override string ToString()
     {
@@ -53,10 +52,10 @@ namespace tcg
         card2.HP == this.HP &&
         card2.Attack == this.Attack &&
         card2.IsSleeping == this.IsSleeping &&
-        (card2.OnPlayAction == this.OnPlayAction || card2.OnPlayAction.Equals(this.OnPlayAction)) &&
-        (card2.OnDieAction == this.OnDieAction || card2.OnDieAction.Equals(this.OnDieAction)) &&
-        (card2.OnUseAction == this.OnUseAction || card2.OnUseAction.Equals(this.OnUseAction)) &&
-        (card2.OnOtherAttackAction == this.OnOtherAttackAction || card2.OnOtherAttackAction.Equals(this.OnOtherAttackAction));
+        (card2.OnStartAction.SequenceEqual(this.OnStartAction)) &&
+        (card2.OnDieAction.SequenceEqual(this.OnDieAction)) &&
+        (card2.OnUseAction.SequenceEqual(this.OnUseAction)) &&
+        (card2.OnOtherAttackAction.SequenceEqual(this.OnOtherAttackAction));
     }
 
     public override int GetHashCode()
