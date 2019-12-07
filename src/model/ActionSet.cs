@@ -204,28 +204,24 @@ namespace tcg
       return state;
     };
 
-    public static SpecifiedAction PerformRandomAction = (state, remainArguments) =>
+    public static SpecifiedAction<int, int, int, int> PerformRandomAction = (state, onSelf, action, targetAmount, power, remainArguments) =>
     {
-      var onSelf = remainArguments[0];
       if (onSelf == 0)
       {
         var player = state.Players[0].Id != state.CurrentPlayer.Id ? state.Players[0] : state.Players[1];
-        state = PerformRandomActionOnPlayer(state, remainArguments, player);
+        state = PerformRandomActionOnPlayer(state, player, action, targetAmount, power);
       }
       else
       {
         var player = state.CurrentPlayer;
-        state = PerformRandomActionOnPlayer(state, remainArguments, player);
+        state = PerformRandomActionOnPlayer(state, player, action, targetAmount, power);
       }
       return state;
     };
 
-    private static GameState PerformRandomActionOnPlayer(GameState state, int[] remainArguments, Player player)
+    private static GameState PerformRandomActionOnPlayer(GameState state, Player player, int action, int targetAmount, int power)
     {
       Random rnd = new Random();
-      var action = remainArguments[1];
-      var targetAmount = remainArguments[2];
-      var power = remainArguments[3];
       if (player.ActiveCards.Count < targetAmount)
       {
         throw new ArgumentException("Not enough cards on table for this action");
@@ -242,11 +238,20 @@ namespace tcg
       return state;
     }
 
-    public static SpecifiedAction Summon = (state, remainArguments) =>
+    public static SpecifiedAction<int> Summon = (state, creatureName, remainArguments) =>
     {
-      var creatureName = remainArguments[0];
       var creature = CardSet.Cards[(CardSet.CardName)creatureName];
       state.CurrentPlayer.ActiveCards.Add(creature());
+
+      return state;
+    };
+
+    public static SpecifiedAction<int, int, int, int> BuffCreature = (state, playerId, cardIndex, attackBuff, hpBuff, remainArguments) =>
+    {
+      var player = state.Players[playerId];
+      var creature = player.ActiveCards[cardIndex];
+      creature.Attack += attackBuff;
+      creature.HP += hpBuff;
 
       return state;
     };
@@ -259,7 +264,8 @@ namespace tcg
         {ActionType.DealDamage, DealDamage},
         {ActionType.EndTurn, EndTurn},
         {ActionType.WakeUpCreatures, WakeUpAllCreatures},
-        {ActionType.PerformRandomAction, PerformRandomAction}
+        {ActionType.PerformRandomAction, PerformRandomAction},
+        {ActionType.BuffCreature, BuffCreature}
       };
   }
 }

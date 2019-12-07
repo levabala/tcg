@@ -15,7 +15,8 @@ namespace tcg
       MultiShot,
       StonetuskBoar,
       MurlocScout,
-      MurlocTidehunter
+      MurlocTidehunter,
+      ShatteredSunCleric,
     }
 
     public static Dictionary<CardName, Func<Card>> Cards = new Dictionary<CardName, Func<Card>>() {
@@ -76,7 +77,7 @@ namespace tcg
             0,
             startAction:new List<Delegate>() {
               (SpecifiedAction)((GameState state,  int[] remainArgs) =>
-                ActionSet.PerformRandomAction(state, new int[]{0, (int)ActionType.DealDamage, 2, 3})//player action targetCount power
+                ActionSet.PerformRandomAction(state, 0, (int)ActionType.DealDamage, 2, 3, remainArgs)
               )}
             )
           },
@@ -97,7 +98,17 @@ namespace tcg
             2,
             startAction:new List<Delegate>() {
               (SpecifiedAction)((GameState state,  int[] remainArgs) =>
-                ActionSet.Summon(state, new int[]{(int)CardSet.CardName.MurlocScout})//player action targetCount power
+                ActionSet.Summon(state, (int)CardSet.CardName.MurlocScout, remainArgs)
+              )}
+            )
+          },
+          {CardName.ShatteredSunCleric, () => new Card(
+            3,
+            2,
+            3,
+             startAction:new List<Delegate>() {
+              (SpecifiedAction<int, int>)((GameState state, int playerIndex, int cardIndex, int[] remainArgs) =>
+                  ActionSet.BuffCreature(state, playerIndex, cardIndex, 1, 1, remainArgs)
               )}
             )
           },

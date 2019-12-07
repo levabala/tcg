@@ -395,5 +395,62 @@ namespace tcgTests
 
       Assert.AreEqual(host.state, stateExpected);
     }
+
+    [Test]
+    public void ShatteredSunClericTest()
+    {
+      Func<Card> testingCardGenerator = CardSet.Cards[CardSet.CardName.ShatteredSunCleric];
+      Func<Card> murloc = CardSet.Cards[CardSet.CardName.MurlocScout];
+
+      GameState state = new GameState(
+        new Player[] {
+          new Player(
+            0,
+            new List<Card> { },
+            new List<Card> { testingCardGenerator() },
+            new List<Card> { murloc()}
+          ) ,
+          new Player(
+            1,
+            new List<Card> { },
+            new List<Card> { },
+            new List<Card> { }
+          ) ,
+        }
+      );
+
+      Host host = new Host(new MiddlewareLocal(), new List<Middleware> { });
+      host.state = state;
+      host.ProcessInput(0, "play 0 0 0");
+
+      GameState stateExpected = new GameState(
+        new Player[] {
+          new Player(
+            0,
+            new List<Card> { },
+            new List<Card> { },
+            new List<Card> { ((Func<Card>)(() => {
+              var card = murloc();
+              card.HP += 1;
+              card.Attack += 1;
+              return card;
+            }))() , testingCardGenerator()},
+            ((Func<Hero>)(() => {
+              var hero = Hero.CommonHero();
+              hero.Mana -= testingCardGenerator().ManaCost;
+              return hero;
+            }))()
+          ) ,
+          new Player(
+            1,
+            new List<Card> { },
+            new List<Card> { },
+            new List<Card> { }
+          ),
+        }
+      );
+
+      Assert.AreEqual(host.state, stateExpected);
+    }
   }
 }
