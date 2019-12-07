@@ -12,7 +12,10 @@ namespace tcg
       VoodooDoctor,
       Starfire,
       GoldshireFootman,
-      Multi_Shot,
+      MultiShot,
+      StonetuskBoar,
+      MurlocScout,
+      MurlocTidehunter
     }
 
     public static Dictionary<CardName, Func<Card>> Cards = new Dictionary<CardName, Func<Card>>() {
@@ -67,7 +70,7 @@ namespace tcg
               isTaunt: true
             )
           },
-          {CardName.Multi_Shot, () => new Card(
+          {CardName.MultiShot, () => new Card(
             4,
             0,
             0,
@@ -75,8 +78,29 @@ namespace tcg
               (SpecifiedAction)((GameState state,  int[] remainArgs) =>
                 ActionSet.PerformRandomAction(state, new int[]{0, (int)ActionType.DealDamage, 2, 3})//player action targetCount power
               )}
-          )
-        },
+            )
+          },
+          {CardName.StonetuskBoar, () => new Card(
+            1,
+            1,
+            1,
+            isSleeping: false)
+          },
+          {CardName.MurlocScout, () => new Card(
+            1,
+            1,
+            1)
+          },
+          {CardName.MurlocTidehunter, () => new Card(
+            1,
+            1,
+            2,
+            startAction:new List<Delegate>() {
+              (SpecifiedAction)((GameState state,  int[] remainArgs) =>
+                ActionSet.Summon(state, new int[]{(int)CardSet.CardName.MurlocScout})//player action targetCount power
+              )}
+            )
+          },
     };
   }
 }

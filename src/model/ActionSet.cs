@@ -241,6 +241,15 @@ namespace tcg
       }
       return state;
     }
+
+    public static SpecifiedAction Summon = (state, remainArguments) =>
+    {
+      var creatureName = remainArguments[0];
+      var creature = CardSet.Cards[(CardSet.CardName)creatureName];
+      state.CurrentPlayer.ActiveCards.Add(creature());
+
+      return state;
+    };
     public static Dictionary<ActionType, Delegate> Actions = new Dictionary<ActionType, Delegate>() {
         {ActionType.Attack, Attack},
         {ActionType.Heal, Heal},

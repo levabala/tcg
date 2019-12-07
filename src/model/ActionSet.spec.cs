@@ -288,7 +288,7 @@ namespace tcgTests
     [Test]
     public void RandomActionTest1()
     {
-      Func<Card> testingCardGenerator = CardSet.Cards[CardSet.CardName.Multi_Shot];
+      Func<Card> testingCardGenerator = CardSet.Cards[CardSet.CardName.MultiShot];
 
       GameState state = new GameState(
         new Player[] {
@@ -318,7 +318,7 @@ namespace tcgTests
     [Test]
     public void RandomActionTest2()
     {
-      Func<Card> testingCardGenerator = CardSet.Cards[CardSet.CardName.Multi_Shot];
+      Func<Card> testingCardGenerator = CardSet.Cards[CardSet.CardName.MultiShot];
 
       GameState state = new GameState(
         new Player[] {

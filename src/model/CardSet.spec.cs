@@ -155,8 +155,8 @@ namespace tcgTests
 
       Host host = new Host(new MiddlewareLocal(), new List<Middleware> { });
       host.state = state;
-      host.ProcessInput(0, "play 0 0 1");
 
+      host.ProcessInput(0, "play 0 0 1");
       GameState stateExpected = new GameState(
         new Player[] {
           new Player(
@@ -243,7 +243,7 @@ namespace tcgTests
     [Test]
     public void Multi_ShotTest()
     {
-      Func<Card> testingCardGenerator = CardSet.Cards[CardSet.CardName.Multi_Shot];
+      Func<Card> testingCardGenerator = CardSet.Cards[CardSet.CardName.MultiShot];
 
       GameState state = new GameState(
         new Player[] {
@@ -285,6 +285,111 @@ namespace tcgTests
             new List<Card> { },
             new List<Card> { }
           ) ,
+        }
+      );
+
+      Assert.AreEqual(host.state, stateExpected);
+    }
+
+    [Test]
+    public void StonetuskBoarTest()
+    {
+      Func<Card> testingCardGenerator = CardSet.Cards[CardSet.CardName.StonetuskBoar];
+      Func<Card> murloc = CardSet.Cards[CardSet.CardName.MurlocScout];
+
+      GameState state = new GameState(
+        new Player[] {
+          new Player(
+            0,
+            new List<Card> { },
+            new List<Card> { testingCardGenerator() },
+            new List<Card> { }
+          ) ,
+          new Player(
+            1,
+            new List<Card> { },
+            new List<Card> { },
+            new List<Card> { murloc(), murloc() }
+          ) ,
+        }
+      );
+
+      Host host = new Host(new MiddlewareLocal(), new List<Middleware> { });
+      host.state = state;
+      host.ProcessInput(0, "play 0");
+      host.ProcessInput(0, "attack 0 0");
+
+      GameState stateExpected = new GameState(
+        new Player[] {
+          new Player(
+            0,
+            new List<Card> { },
+            new List<Card> { },
+            new List<Card> { },
+            ((Func<Hero>)(() => {
+              var hero = Hero.CommonHero();
+              hero.Mana -= testingCardGenerator().ManaCost;
+              return hero;
+            }))()
+          ) ,
+          new Player(
+            1,
+            new List<Card> { },
+            new List<Card> { },
+            new List<Card> {murloc() }
+          ),
+        }
+      );
+
+      Assert.AreEqual(host.state, stateExpected);
+    }
+    [Test]
+    public void MurlocTidehunterTest()
+    {
+      Func<Card> testingCardGenerator = CardSet.Cards[CardSet.CardName.MurlocTidehunter];
+      Func<Card> murloc = CardSet.Cards[CardSet.CardName.MurlocScout];
+
+      GameState state = new GameState(
+        new Player[] {
+          new Player(
+            0,
+            new List<Card> { },
+            new List<Card> { testingCardGenerator() },
+            new List<Card> { }
+          ) ,
+          new Player(
+            1,
+            new List<Card> { },
+            new List<Card> { },
+            new List<Card> { }
+          ) ,
+        }
+      );
+
+      Host host = new Host(new MiddlewareLocal(), new List<Middleware> { });
+      host.state = state;
+      host.ProcessInput(0, "play 0");
+      host.ProcessInput(0, "attack 0 0");
+
+      GameState stateExpected = new GameState(
+        new Player[] {
+          new Player(
+            0,
+            new List<Card> { },
+            new List<Card> { },
+            new List<Card> { testingCardGenerator(), murloc() },
+            ((Func<Hero>)(() => {
+              var hero = Hero.CommonHero();
+              hero.Mana -= testingCardGenerator().ManaCost;
+              return hero;
+            }))()
+          ) ,
+          new Player(
+            1,
+            new List<Card> { },
+            new List<Card> { },
+            new List<Card> { }
+          ),
         }
       );
 
