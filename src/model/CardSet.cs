@@ -17,6 +17,7 @@ namespace tcg
       MurlocScout,
       MurlocTidehunter,
       ShatteredSunCleric,
+      FrostwolfWarlord,
     }
 
     public static Dictionary<CardName, Func<Card>> Cards = new Dictionary<CardName, Func<Card>>() {
@@ -112,6 +113,19 @@ namespace tcg
               )}
             )
           },
+          {CardName.FrostwolfWarlord, () => new Card(
+            5,
+            4,
+            4,
+             startAction:new List<Delegate>() {
+              (SpecifiedAction)((GameState state, int[] remainArgs) =>{
+                var player = state.CurrentPlayer;
+                return ActionSet.BuffCreature(state, player.Id, player.ActiveCards.Count - 1,
+                  player.ActiveCards.Count - 1, player.ActiveCards.Count - 1, remainArgs);
+              }
+              )}
+            )
+          }
     };
   }
 }
