@@ -203,6 +203,44 @@ namespace tcg
 
       return state;
     };
+
+    public static SpecifiedAction PerformRandomAction = (state, remainArguments) =>
+    {
+      var onSelf = remainArguments[0];
+      if (onSelf == 0)
+      {
+        var player = state.Players[0].Id != state.CurrentPlayer.Id ? state.Players[0] : state.Players[1];
+        state = PerformRandomActionOnPlayer(state, remainArguments, player);
+      }
+      else
+      {
+        var player = state.CurrentPlayer;
+        state = PerformRandomActionOnPlayer(state, remainArguments, player);
+      }
+      return state;
+    };
+
+    private static GameState PerformRandomActionOnPlayer(GameState state, int[] remainArguments, Player player)
+    {
+      Random rnd = new Random();
+      var action = remainArguments[1];
+      var targetAmount = remainArguments[2];
+      var power = remainArguments[3];
+      if (player.ActiveCards.Count < targetAmount)
+      {
+        throw new ArgumentException("Not enough cards on table for this action");
+      }
+      var cardIndexes = Enumerable.Range(0, 2).ToList();
+      for (var i = 0; i < targetAmount; i++)
+      {
+        var randomIndex = rnd.Next(cardIndexes.Count);
+        var randomCard = cardIndexes[randomIndex];
+        cardIndexes.RemoveAt(randomIndex);
+        var packedAction = ActionSet.PackAction(state, Actions[(ActionType)action], new int[3] { player.Id, randomCard, power });
+        packedAction(state);
+      }
+      return state;
+    }
     public static Dictionary<ActionType, Delegate> Actions = new Dictionary<ActionType, Delegate>() {
         {ActionType.Attack, Attack},
         {ActionType.Heal, Heal},
@@ -211,7 +249,8 @@ namespace tcg
         {ActionType.ProcessDeath, ProcessDeath},
         {ActionType.DealDamage, DealDamage},
         {ActionType.EndTurn, EndTurn},
-        {ActionType.WakeUpCreatures, WakeUpAllCreatures}
+        {ActionType.WakeUpCreatures, WakeUpAllCreatures},
+        {ActionType.PerformRandomAction, PerformRandomAction}
       };
   }
 }

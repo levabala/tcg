@@ -11,7 +11,8 @@ namespace tcg
       IronforgeRifleman,
       VoodooDoctor,
       Starfire,
-      GoldshireFootman
+      GoldshireFootman,
+      Multi_Shot,
     }
 
     public static Dictionary<CardName, Func<Card>> Cards = new Dictionary<CardName, Func<Card>>() {
@@ -66,6 +67,16 @@ namespace tcg
               isTaunt: true
             )
           },
-        };
+          {CardName.Multi_Shot, () => new Card(
+            4,
+            0,
+            0,
+            startAction:new List<Delegate>() {
+              (SpecifiedAction)((GameState state,  int[] remainArgs) =>
+                ActionSet.PerformRandomAction(state, new int[]{0, (int)ActionType.DealDamage, 2, 3})//player action targetCount power
+              )}
+          )
+        },
+    };
   }
 }
