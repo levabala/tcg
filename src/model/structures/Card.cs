@@ -14,18 +14,22 @@ namespace tcg
     public int Attack { get; set; }
     public bool IsSleeping { get; set; }
     public bool IsTaunt { get; set; }
+    public string Name{ get; set; }
+    public string Description{ get; set; }
     public List<Delegate> OnStartAction { get; set; } = new List<Delegate>();
     public List<Delegate> OnUseAction { get; set; } = new List<Delegate>();
     public List<Delegate> OnDieAction { get; set; } = new List<Delegate>();
 
-    public Card(int mana, int hp, int attack, bool isSleeping = true, bool isTaunt = false, List<Delegate> startAction = null, List<Delegate> useAction = null, List<Delegate> dieAction = null)
+    public Card(string name, int mana, int hp, int attack, bool isSleeping = true, bool isTaunt = false, string description = "", List<Delegate> startAction = null, List<Delegate> useAction = null, List<Delegate> dieAction = null)
     {
+      Name = name;
       ManaCost = mana;
       HP = hp;
       MaxHP = hp;
       Attack = attack;
       IsSleeping = isSleeping;
       IsTaunt = isTaunt;
+      Description = description;
 
       if (startAction != null)
         OnStartAction = startAction;
@@ -37,7 +41,7 @@ namespace tcg
 
     public override string ToString()
     {
-      return String.Format("Mana cost: {0}, HP: {1}, Attack: {2}", ManaCost, HP, Attack);
+      return String.Format("{0} Mana cost: {1}, HP: {2}, Attack: {3}   {4}\n", Name, ManaCost, HP, Attack, Description);
     }
 
     public override bool Equals(object obj)
@@ -64,24 +68,24 @@ namespace tcg
 
     static public Card DimonCard()
     {
-      var card = new Card(-5, 1, -1);
+      var card = new Card("Dimon", -5, 1, -1);
       card.IsSleeping = false;
       return card;
     }
 
     static public Card DimonStrongCard()
     {
-      return new Card(-5, 10, -1);
+      return new Card("Strong Dimon", -5, 10, -1);
     }
 
     static public Card LevCard()
     {
-      return new Card(100, 100, 100);
+      return new Card("Lev", 100, 100, 100);
     }
 
     static public Card LevBudgetCard()
     {
-      return new Card(10, 100, 100);
+      return new Card("Budget Lev", 10, 100, 100);
     }
   }
 }
