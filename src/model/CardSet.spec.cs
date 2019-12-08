@@ -241,7 +241,7 @@ namespace tcgTests
     }
 
     [Test]
-    public void Multi_ShotTest()
+    public void MultiShotTest()
     {
       Func<Card> testingCardGenerator = CardSet.Cards[CardSet.CardName.MultiShot];
 

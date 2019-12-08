@@ -204,29 +204,24 @@ namespace tcg
       return state;
     };
 
-    public static SpecifiedAction<int, int, int, int> PerformRandomAction = (state, onSelf, action, targetAmount, power, remainArguments) =>
+    public static SpecifiedAction<int, int, int, int> PerformActionOnCard = (state, onSelf, action, actionAmount, power, remainArguments) =>
     {
-      if (onSelf == 0)
-      {
-        var player = state.Players[0].Id != state.CurrentPlayer.Id ? state.Players[0] : state.Players[1];
-        state = PerformRandomActionOnPlayer(state, player, action, targetAmount, power);
-      }
-      else
-      {
-        var player = state.CurrentPlayer;
-        state = PerformRandomActionOnPlayer(state, player, action, targetAmount, power);
-      }
-      return state;
+      var player = onSelf == 0 ?
+        (state.Players[0].Id != state.CurrentPlayer.Id ? state.Players[0] : state.Players[1]) :
+        state.CurrentPlayer;
+
+      return PerformActionOnCardWithPlayer(state, player, action, actionAmount, power);
     };
 
-    private static GameState PerformRandomActionOnPlayer(GameState state, Player player, int action, int targetAmount, int power)
+    private static GameState PerformActionOnCardWithPlayer(GameState state, Player player, int action, int targetAmount, int power)
     {
       Random rnd = new Random();
       if (player.ActiveCards.Count < targetAmount)
       {
         throw new ArgumentException("Not enough cards on table for this action");
       }
-      var cardIndexes = Enumerable.Range(0, 2).ToList();
+
+      var cardIndexes = Enumerable.Range(0, player.ActiveCards.Count).ToList();
       for (var i = 0; i < targetAmount; i++)
       {
         var randomIndex = rnd.Next(cardIndexes.Count);
@@ -264,7 +259,7 @@ namespace tcg
         {ActionType.DealDamage, DealDamage},
         {ActionType.EndTurn, EndTurn},
         {ActionType.WakeUpCreatures, WakeUpAllCreatures},
-        {ActionType.PerformRandomAction, PerformRandomAction},
+        {ActionType.PerformActionOnCard, PerformActionOnCard},
         {ActionType.BuffCreature, BuffCreature}
       };
   }

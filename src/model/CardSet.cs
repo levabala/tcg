@@ -78,7 +78,7 @@ namespace tcg
             0,
             startAction:new List<Delegate>() {
               (SpecifiedAction)((GameState state,  int[] remainArgs) =>
-                ActionSet.PerformRandomAction(state, 0, (int)ActionType.DealDamage, 2, 3, remainArgs)
+                ActionSet.PerformActionOnCard(state, 0, (int)ActionType.DealDamage, 2, 3, remainArgs)
               )}
             )
           },
