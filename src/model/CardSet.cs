@@ -11,7 +11,13 @@ namespace tcg
       IronforgeRifleman,
       VoodooDoctor,
       Starfire,
-      GoldshireFootman
+      GoldshireFootman,
+      MultiShot,
+      StonetuskBoar,
+      MurlocScout,
+      MurlocTidehunter,
+      ShatteredSunCleric,
+      FrostwolfWarlord,
     }
 
     public static Dictionary<CardName, Func<Card>> Cards = new Dictionary<CardName, Func<Card>>() {
@@ -66,6 +72,60 @@ namespace tcg
               isTaunt: true
             )
           },
-        };
+          {CardName.MultiShot, () => new Card(
+            4,
+            0,
+            0,
+            startAction:new List<Delegate>() {
+              (SpecifiedAction)((GameState state,  int[] remainArgs) =>
+                ActionSet.PerformActionOnRandomCard(state, 0, (int)ActionType.DealDamage, 2, 3, remainArgs)
+              )}
+            )
+          },
+          {CardName.StonetuskBoar, () => new Card(
+            1,
+            1,
+            1,
+            isSleeping: false)
+          },
+          {CardName.MurlocScout, () => new Card(
+            1,
+            1,
+            1)
+          },
+          {CardName.MurlocTidehunter, () => new Card(
+            1,
+            1,
+            2,
+            startAction:new List<Delegate>() {
+              (SpecifiedAction)((GameState state,  int[] remainArgs) =>
+                ActionSet.Summon(state, (int)CardSet.CardName.MurlocScout, remainArgs)
+              )}
+            )
+          },
+          {CardName.ShatteredSunCleric, () => new Card(
+            3,
+            2,
+            3,
+             startAction:new List<Delegate>() {
+              (SpecifiedAction<int, int>)((GameState state, int playerIndex, int cardIndex, int[] remainArgs) =>
+                  ActionSet.BuffCreature(state, playerIndex, cardIndex, 1, 1, remainArgs)
+              )}
+            )
+          },
+          {CardName.FrostwolfWarlord, () => new Card(
+            5,
+            4,
+            4,
+             startAction:new List<Delegate>() {
+              (SpecifiedAction)((GameState state, int[] remainArgs) =>{
+                var player = state.CurrentPlayer;
+                return ActionSet.BuffCreature(state, player.Id, player.ActiveCards.Count - 1,
+                  player.ActiveCards.Count - 1, player.ActiveCards.Count - 1, remainArgs);
+              }
+              )}
+            )
+          }
+    };
   }
 }

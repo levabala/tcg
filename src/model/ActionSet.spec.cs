@@ -76,7 +76,7 @@ namespace tcgTests
       playCardAction(state);
 
       GameState stateExpected = new GameState(
-        new Player[] {
+       new Player[] {
           new Player(
             0,
             new List<Card> { },
@@ -94,8 +94,8 @@ namespace tcgTests
             new List<Card> { },
             new List<Card> { }
           ),
-        }
-      );
+       }
+     );
 
       Assert.AreEqual(state, stateExpected);
     }
@@ -283,6 +283,63 @@ namespace tcgTests
       );
 
       Assert.AreEqual(state, stateExpected);
+    }
+
+    [Test]
+    public void RandomActionTest1()
+    {
+      Func<Card> testingCardGenerator = CardSet.Cards[CardSet.CardName.MultiShot];
+
+      GameState state = new GameState(
+        new Player[] {
+          new Player(
+            0,
+            new List<Card> { },
+            new List<Card> { testingCardGenerator() },
+            new List<Card> { }
+          ) ,
+          new Player(
+            1,
+            new List<Card> { },
+            new List<Card> { },
+            new List<Card> { Card.DimonCard(), Card.DimonCard(), Card.DimonCard() }
+          ) ,
+        }
+      );
+
+      Host host = new Host(new MiddlewareLocal(), new List<Middleware> { });
+      host.state = state;
+      host.ProcessInput(0, "play 0");
+
+      var player = state.Players[0].Id != state.CurrentPlayer.Id ? state.Players[0] : state.Players[1];
+      Assert.AreEqual(player.ActiveCards.Count, 1);
+    }
+
+    [Test]
+    public void RandomActionTest2()
+    {
+      Func<Card> testingCardGenerator = CardSet.Cards[CardSet.CardName.MultiShot];
+
+      GameState state = new GameState(
+        new Player[] {
+          new Player(
+            0,
+            new List<Card> { },
+            new List<Card> { testingCardGenerator() },
+            new List<Card> { }
+          ) ,
+          new Player(
+            1,
+            new List<Card> { },
+            new List<Card> { },
+            new List<Card> { Card.DimonCard() }
+          ) ,
+        }
+      );
+
+      var playCardAction = ActionSet.PackAction(state, ActionType.PlayCard, new int[] { 0 });
+      Assert.Catch(() => playCardAction(state), "Not enough cards on table for this action");
+
     }
   }
 }
