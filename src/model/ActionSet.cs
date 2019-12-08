@@ -204,7 +204,7 @@ namespace tcg
       return state;
     };
 
-    public static SpecifiedAction<int, int, int, int> PerformActionOnCard = (state, onSelf, action, actionAmount, power, remainArguments) =>
+    public static SpecifiedAction<int, int, int, int> PerformActionOnRandomCard = (state, onSelf, action, actionAmount, power, remainArguments) =>
     {
       var player = onSelf == 0 ?
         (state.Players[0].Id != state.CurrentPlayer.Id ? state.Players[0] : state.Players[1]) :
@@ -245,6 +245,7 @@ namespace tcg
     {
       var player = state.Players[playerId];
       var creature = player.ActiveCards[cardIndex];
+
       creature.Attack += attackBuff;
       creature.HP += hpBuff;
 
@@ -259,7 +260,7 @@ namespace tcg
         {ActionType.DealDamage, DealDamage},
         {ActionType.EndTurn, EndTurn},
         {ActionType.WakeUpCreatures, WakeUpAllCreatures},
-        {ActionType.PerformActionOnCard, PerformActionOnCard},
+        {ActionType.PerformActionOnRandomCard, PerformActionOnRandomCard},
         {ActionType.BuffCreature, BuffCreature}
       };
   }

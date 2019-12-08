@@ -16,7 +16,7 @@ namespace tcg
     DealDamage,
     EndTurn,
     WakeUpCreatures,
-    PerformActionOnCard,
+    PerformActionOnRandomCard,
     BuffCreature
   }
 }
