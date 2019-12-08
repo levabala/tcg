@@ -83,6 +83,7 @@ namespace tcg
             )
           },
           {CardName.MultiShot, () => new Card(
+            "MultiShot",
             4,
             0,
             0,
@@ -93,17 +94,20 @@ namespace tcg
             )
           },
           {CardName.StonetuskBoar, () => new Card(
+            "StonetuskBoar",
             1,
             1,
             1,
             isSleeping: false)
           },
           {CardName.MurlocScout, () => new Card(
+            "MurlocScout",
             1,
             1,
             1)
           },
           {CardName.MurlocTidehunter, () => new Card(
+            "MurlocTidehunter",
             1,
             1,
             2,
@@ -114,6 +118,7 @@ namespace tcg
             )
           },
           {CardName.ShatteredSunCleric, () => new Card(
+            "ShatteredSunCleric",
             3,
             2,
             3,
@@ -124,6 +129,7 @@ namespace tcg
             )
           },
           {CardName.FrostwolfWarlord, () => new Card(
+            "FrostwolfWarlord",
             5,
             4,
             4,
