@@ -16,9 +16,11 @@ namespace tcg
 
     public static Dictionary<CardName, Func<Card>> Cards = new Dictionary<CardName, Func<Card>>() {
           {CardName.FlashHeal, () => new Card(
+              "Flash Heal",
               1,
               0,
               0,
+              description: "Heals 2 damage",
               startAction: new List<Delegate>() {(SpecifiedAction<int, int>)(
                 (GameState state, int playerIndex, int cardIndex, int[] remainArgs) =>
                   ActionSet.Heal(state, playerIndex, cardIndex, 5, remainArgs)
@@ -26,9 +28,11 @@ namespace tcg
             )
           },
           {CardName.IronforgeRifleman, () => new Card(
+              "Ironforge Rifleman",
               3,
               2,
               2,
+              description: "Battlecry: Deal 1 damage",
               startAction:new List<Delegate>() {(SpecifiedAction<int, int>)(
                 (GameState state, int playerIndex, int cardIndex, int[] remainArgs) =>
                   ActionSet.DealDamage(state, playerIndex, cardIndex, 1, remainArgs)
@@ -36,9 +40,11 @@ namespace tcg
             )
           },
           {CardName.VoodooDoctor, () => new Card(
+              "Voodoo Doctor",
               1,
               1,
               2,
+              description: "Battlecry: Heal 2 damage",
               startAction:new List<Delegate>() {(SpecifiedAction<int, int>)(
                 (GameState state, int playerIndex, int cardIndex, int[] remainArgs) =>
                   ActionSet.Heal(state, playerIndex, cardIndex, 2, remainArgs)
@@ -46,9 +52,11 @@ namespace tcg
             )
           },
           {CardName.Starfire, () => new Card(
+            "Star Fire",
               6,
               0,
               0,
+              description: "Deal 5 damage. Draw a card",
               startAction:new List<Delegate>() {
                 (SpecifiedAction<int, int>)((GameState state, int playerIndex, int cardIndex, int[] remainArgs) =>
                   ActionSet.DealDamage(state, playerIndex, cardIndex, 5, remainArgs)
@@ -60,9 +68,11 @@ namespace tcg
             )
           },
           {CardName.GoldshireFootman, () => new Card(
+            "Goldshire Footman",
               1,
               2,
               1,
+              description: "Taunt",
               isTaunt: true
             )
           },

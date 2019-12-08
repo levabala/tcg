@@ -8,18 +8,19 @@ namespace tcg
 {
   class Card
   {
-    public string Name { get; set; }
     public int ManaCost { get; set; }
     public int HP { get; set; }
     public int MaxHP { get; set; }
     public int Attack { get; set; }
     public bool IsSleeping { get; set; }
     public bool IsTaunt { get; set; }
+    public string Name{ get; set; }
+    public string Description{ get; set; }
     public List<Delegate> OnStartAction { get; set; } = new List<Delegate>();
     public List<Delegate> OnUseAction { get; set; } = new List<Delegate>();
     public List<Delegate> OnDieAction { get; set; } = new List<Delegate>();
 
-    public Card(int mana, int hp, int attack, bool isSleeping = true, bool isTaunt = false, List<Delegate> startAction = null, List<Delegate> useAction = null, List<Delegate> dieAction = null)
+    public Card(string name, int mana, int hp, int attack, bool isSleeping = true, bool isTaunt = false, string description = "", List<Delegate> startAction = null, List<Delegate> useAction = null, List<Delegate> dieAction = null)
     {
       Name = name;
       ManaCost = mana;
@@ -28,6 +29,7 @@ namespace tcg
       Attack = attack;
       IsSleeping = isSleeping;
       IsTaunt = isTaunt;
+      Description = description;
 
       if (startAction != null)
         OnStartAction = startAction;
@@ -39,7 +41,7 @@ namespace tcg
 
     public override string ToString()
     {
-      return String.Format("{0} Mana cost: {1}, HP: {2}, Attack: {3}\n",Name, ManaCost, HP, Attack);
+      return String.Format("{0} Mana cost: {1}, HP: {2}, Attack: {3}   {4}\n", Name, ManaCost, HP, Attack, Description);
     }
 
     public override bool Equals(object obj)

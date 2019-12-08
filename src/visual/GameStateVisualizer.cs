@@ -7,7 +7,7 @@ namespace tcg
 {
   static class GameStateVisualizer
   {
-    public static string OutputBoard(Player currPlayer){
+    public static string BoardToString(Player currPlayer){
         string toReturn = "";
         
         Hero currHero = currPlayer.Hero;
@@ -26,7 +26,7 @@ namespace tcg
         return toReturn;
     }
 
-    public static string OutputHand(Player currPlayer){
+    public static string HandToString(Player currPlayer){
       string toReturn = "";
 
       List<Card> cardsInHand = currPlayer.CardsInHand;
@@ -39,18 +39,19 @@ namespace tcg
 
       return toReturn;
     }
-    public static string Visualize(GameState state)
+    public static string GameStateToString(GameState state, int id)
     {
       string toReturn = "";
 
+      Player currPlayer = state.Players[id];
       for (int i = 0; i<state.Players.Length; i++){
-        Player currPlayer = state.Players[i];
+        Player player = state.Players[i];
 
-        if(currPlayer != state.CurrentPlayer)
-          toReturn += OutputBoard(currPlayer);
+        if(player.Id != id)
+          toReturn += BoardToString(player);
       }
-      toReturn += OutputBoard(state.CurrentPlayer);
-      toReturn += OutputHand(state.CurrentPlayer);
+      toReturn += BoardToString(currPlayer);
+      toReturn += HandToString(currPlayer);
 
       return toReturn;
     }
