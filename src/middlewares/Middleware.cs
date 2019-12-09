@@ -11,15 +11,17 @@ namespace tcg
     // void ConnectMiddleware(IMiddleware middleware);
   }
 
-  abstract class Middleware<MiddlewareType> where MiddlewareType : IMiddleware
+  abstract class Middleware<ConnectableMiddlewareType> where ConnectableMiddlewareType : IMiddleware
   {
     public List<Action<string>> onSendDataListeners = new List<Action<string>>();
-    protected List<MiddlewareType> connectedMiddleware = new List<MiddlewareType>();
-    abstract public void SendData(string data);
+    protected List<ConnectableMiddlewareType> connectedMiddleware = new List<ConnectableMiddlewareType>();
     abstract public void SendDataPersonally(string data, int receiverIndex);
     abstract public void AddInputHandler(Action<int, string> handler);
-    abstract public void ConnectMiddleware(MiddlewareType middleware);
-
-    // TODO: realize MiddlewareNetwork
+    abstract public void ConnectMiddleware(ConnectableMiddlewareType middleware);
+    virtual public void SendData(string data)
+    {
+      for (int i = 0; i < onSendDataListeners.Count; i++)
+        SendDataPersonally(data, i);
+    }
   }
 }

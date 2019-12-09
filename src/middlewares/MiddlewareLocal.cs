@@ -17,12 +17,6 @@ namespace tcg
       middleware.ConnectMiddleware(this);
     }
 
-    public override void SendData(string data)
-    {
-      for (int i = 0; i < onSendDataListeners.Count; i++)
-        SendDataPersonally(data, i);
-    }
-
     public override void SendDataPersonally(string data, int receiverIndex)
     {
       // dispatch send data event
