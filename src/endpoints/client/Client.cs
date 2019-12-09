@@ -5,11 +5,11 @@ namespace tcg
 {
   class Client
   {
-    readonly Middleware middleware;
-    public Client(Middleware middleware)
+    readonly IMiddleware IMiddleware;
+    public Client(IMiddleware IMiddleware)
     {
-      this.middleware = middleware;
-      middleware.AddInputHandler((i, input) => HandleInput(input));
+      this.IMiddleware = IMiddleware;
+      IMiddleware.AddInputHandler((i, input) => HandleInput(input));
     }
 
     public void HandleInput(string input)
@@ -20,7 +20,7 @@ namespace tcg
 
     public void SendCommand(string command)
     {
-      middleware.SendData(command);
+      IMiddleware.SendData(command);
     }
   }
 }

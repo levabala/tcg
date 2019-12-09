@@ -4,14 +4,9 @@ using System.Linq;
 
 namespace tcg
 {
-  class MiddlewareLocal : Middleware
+  class MiddlewareLocal : Middleware<MiddlewareLocal>, IMiddleware
   {
-    public MiddlewareLocal()
-    {
-
-    }
-
-    public override void ConnectMiddleware(Middleware middleware)
+    public override void ConnectMiddleware(MiddlewareLocal middleware)
     {
       this.connectedMiddleware.Add(middleware);
     }

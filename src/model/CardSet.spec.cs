@@ -35,7 +35,7 @@ namespace tcgTests
         }
       );
 
-      Host host = new Host(new MiddlewareLocal(), new List<Middleware> { });
+      Host host = new Host(new MiddlewareLocal(), new List<IMiddleware> { });
       host.state = state;
       host.ProcessInput(0, "play 0 0 1");
 
@@ -92,7 +92,7 @@ namespace tcgTests
         }
       );
 
-      Host host = new Host(new MiddlewareLocal(), new List<Middleware> { });
+      Host host = new Host(new MiddlewareLocal(), new List<IMiddleware> { });
       host.state = state;
       host.ProcessInput(0, "play 0 1 2");
 
@@ -153,7 +153,7 @@ namespace tcgTests
         }
       );
 
-      Host host = new Host(new MiddlewareLocal(), new List<Middleware> { });
+      Host host = new Host(new MiddlewareLocal(), new List<IMiddleware> { });
       host.state = state;
       host.ProcessInput(0, "play 0 0 1");
 
@@ -211,7 +211,7 @@ namespace tcgTests
         }
       );
 
-      Host host = new Host(new MiddlewareLocal(), new List<Middleware> { });
+      Host host = new Host(new MiddlewareLocal(), new List<IMiddleware> { });
       host.state = state;
       host.ProcessInput(0, "play 0 1 1");
 

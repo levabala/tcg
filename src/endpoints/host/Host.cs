@@ -9,10 +9,10 @@ namespace tcg
   class Host
   {
     public GameState state;
-    readonly List<Middleware> playersMiddleware;
-    readonly Middleware middleware;
+    readonly List<IMiddleware> playersMiddleware;
+    readonly IMiddleware middleware;
     List<Action<int, string>> inputHadlers = new List<Action<int, string>>();
-    public Host(Middleware middleware, IEnumerable<Middleware> playersMiddleware)
+    public Host(IMiddleware middleware, IEnumerable<IMiddleware> playersMiddleware)
     {
       this.middleware = middleware;
       this.playersMiddleware = playersMiddleware.ToList();

@@ -21,7 +21,7 @@ namespace tcgTests
     [Test]
     public void Initialize()
     {
-      Middleware mid1, mid2, midHost;
+      IMiddleware mid1, mid2, midHost;
       Host host;
 
       (mid1, mid2, midHost, host) = InitializePreset();
@@ -30,7 +30,7 @@ namespace tcgTests
     [Test]
     public void PlayerToHostSendDataTest()
     {
-      Middleware mid1, mid2, midHost;
+      IMiddleware mid1, mid2, midHost;
       Host host;
 
       (mid1, mid2, midHost, host) = InitializePreset();
@@ -60,7 +60,7 @@ namespace tcgTests
     [Test]
     public void HostToPlayerSendDataTest()
     {
-      Middleware mid1, mid2, midHost;
+      IMiddleware mid1, mid2, midHost;
       Host host;
 
       (mid1, mid2, midHost, host) = InitializePreset();
@@ -84,7 +84,7 @@ namespace tcgTests
     [Test]
     public void HostInputValidationTest()
     {
-      Middleware mid1, mid2, midHost;
+      IMiddleware mid1, mid2, midHost;
       Host host;
 
       (mid1, mid2, midHost, host) = InitializePreset();
@@ -106,7 +106,7 @@ namespace tcgTests
     [Test]
     public void ProcessAndExecuteCommand1()
     {
-      Middleware mid1, mid2, midHost;
+      IMiddleware mid1, mid2, midHost;
       Host host;
 
       (mid1, mid2, midHost, host) = InitializePreset();
@@ -163,7 +163,7 @@ namespace tcgTests
 
     public void ProcessAndExecuteCommand2()
     {
-      Middleware mid1, mid2, midHost;
+      IMiddleware mid1, mid2, midHost;
       Host host;
 
       (mid1, mid2, midHost, host) = InitializePreset();
@@ -221,7 +221,7 @@ namespace tcgTests
     [Test]
     public void ProcessAndExecuteCommandEndTurn()
     {
-      Middleware mid1, mid2, midHost;
+      IMiddleware mid1, mid2, midHost;
       Host host;
 
       (mid1, mid2, midHost, host) = InitializePreset();
