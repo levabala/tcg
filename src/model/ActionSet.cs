@@ -203,6 +203,54 @@ namespace tcg
 
       return state;
     };
+
+    public static SpecifiedAction<int, int, int, int> PerformActionOnRandomCard = (state, onSelf, action, actionAmount, power, remainArguments) =>
+    {
+      var player = onSelf == 0 ?
+        (state.Players[0].Id != state.CurrentPlayer.Id ? state.Players[0] : state.Players[1]) :
+        state.CurrentPlayer;
+
+      return PerformActionOnCardWithPlayer(state, player, action, actionAmount, power);
+    };
+
+    private static GameState PerformActionOnCardWithPlayer(GameState state, Player player, int action, int targetAmount, int power)
+    {
+      Random rnd = new Random();
+      if (player.ActiveCards.Count < targetAmount)
+      {
+        throw new ArgumentException("Not enough cards on table for this action");
+      }
+
+      var cardIndexes = Enumerable.Range(0, player.ActiveCards.Count).ToList();
+      for (var i = 0; i < targetAmount; i++)
+      {
+        var randomIndex = rnd.Next(cardIndexes.Count);
+        var randomCard = cardIndexes[randomIndex];
+        cardIndexes.RemoveAt(randomIndex);
+        var packedAction = ActionSet.PackAction(state, Actions[(ActionType)action], new int[3] { player.Id, randomCard, power });
+        packedAction(state);
+      }
+      return state;
+    }
+
+    public static SpecifiedAction<int> Summon = (state, creatureName, remainArguments) =>
+    {
+      var creature = CardSet.Cards[(CardSet.CardName)creatureName];
+      state.CurrentPlayer.ActiveCards.Add(creature());
+
+      return state;
+    };
+
+    public static SpecifiedAction<int, int, int, int> BuffCreature = (state, playerId, cardIndex, attackBuff, hpBuff, remainArguments) =>
+    {
+      var player = state.Players[playerId];
+      var creature = player.ActiveCards[cardIndex];
+
+      creature.Attack += attackBuff;
+      creature.HP += hpBuff;
+
+      return state;
+    };
     public static Dictionary<ActionType, Delegate> Actions = new Dictionary<ActionType, Delegate>() {
         {ActionType.Attack, Attack},
         {ActionType.Heal, Heal},
@@ -211,7 +259,9 @@ namespace tcg
         {ActionType.ProcessDeath, ProcessDeath},
         {ActionType.DealDamage, DealDamage},
         {ActionType.EndTurn, EndTurn},
-        {ActionType.WakeUpCreatures, WakeUpAllCreatures}
+        {ActionType.WakeUpCreatures, WakeUpAllCreatures},
+        {ActionType.PerformActionOnRandomCard, PerformActionOnRandomCard},
+        {ActionType.BuffCreature, BuffCreature}
       };
   }
 }
