@@ -307,7 +307,7 @@ namespace tcgTests
         }
       );
 
-      Host host = new Host(new MiddlewareLocal(), new List<Middleware> { });
+      Host host = new Host(new MiddlewareLocal(), new List<MiddlewareLocal> { });
       host.state = state;
       host.ProcessInput(0, "play 0");
 
