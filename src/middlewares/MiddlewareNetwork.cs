@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace tcg
 {
-  class MiddlewareNetwork : Middleware<MiddlewareNetwork>, IMiddleware
+  class MiddlewareNetwork : Middleware
   {
     List<Action<int, string>> onDataListeners = new List<Action<int, string>>();
     string ipAddress;
@@ -60,11 +60,14 @@ namespace tcg
 
     private void DispatchInputData(string data, string address)
     {
-      var relativeMiddlewareIndex = connectedMiddleware.FindIndex(mid => mid.ipAddress == address);
+      var relativeMiddlewareIndex = connectedMiddleware.FindIndex(
+        mid => (mid is MiddlewareNetwork middlewareNetwork) ? middlewareNetwork.ipAddress == address : false
+      );
+
       onDataListeners.ForEach(listener => listener(relativeMiddlewareIndex, data));
     }
 
-    public override void ConnectMiddleware(MiddlewareNetwork middleware)
+    public override void ConnectMiddleware(IMiddleware middleware)
     {
       this.connectedMiddleware.Add(middleware);
     }
@@ -82,19 +85,19 @@ namespace tcg
 
     public override void SendDataPersonally(string data, int receiverIndex)
     {
-      Console.WriteLine("SendDataPersonally");
-      MiddlewareNetwork middleware = connectedMiddleware[receiverIndex];
+      if (connectedMiddleware[receiverIndex] is MiddlewareNetwork middleware)
+      {
+        TcpClient client = new TcpClient(middleware.ipAddress, middleware.port);
+        NetworkStream stream = client.GetStream();
 
-      Console.WriteLine(string.Format("Try to connect to {0}:{1}", middleware.ipAddress, middleware.port));
-      TcpClient client = new TcpClient(middleware.ipAddress, middleware.port);
+        byte[] dataBinary = System.Text.Encoding.ASCII.GetBytes(data);
 
-      Console.WriteLine(string.Format("Send \"{0}\" to {1}:{2}", data, middleware.ipAddress, middleware.port));
+        stream.Write(dataBinary);
+        stream.Close();
+      }
 
-      NetworkStream stream = client.GetStream();
-      byte[] dataBinary = System.Text.Encoding.ASCII.GetBytes(data);
-
-      stream.Write(dataBinary);
-      stream.Close();
+      if (onSendDataListeners.ContainsKey(receiverIndex))
+        onSendDataListeners[receiverIndex](data);
     }
   }
 }

@@ -4,9 +4,11 @@ using System.Linq;
 
 namespace tcg
 {
-  class MiddlewareLocal : Middleware<MiddlewareLocal>, IMiddleware
+  class MiddlewareLocal : Middleware
   {
-    public override void ConnectMiddleware(MiddlewareLocal middleware)
+
+
+    public override void ConnectMiddleware(IMiddleware middleware)
     {
       this.connectedMiddleware.Add(middleware);
     }
@@ -42,7 +44,8 @@ namespace tcg
         //   return input => handler(localI, input);
         // }))();
 
-        connectedMiddleware[i].onSendDataListeners.Add(closure);
+        // TODO: support more than 1 listener
+        connectedMiddleware[i].AddOnSendDataListenerNext(closure);
       }
     }
 
