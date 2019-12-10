@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -18,7 +19,7 @@ namespace tcg
       this.port = port;
 
       if (listening)
-        HandleConnectionsAsync().Wait();
+        HandleConnectionsAsync().ContinueWith(t => Console.WriteLine("Task completed"));
     }
 
     private async Task HandleConnectionsAsync()
@@ -26,11 +27,41 @@ namespace tcg
       var server = new TcpListener(IPAddress.Parse(ipAddress), port);
       server.Start();
 
+      Console.WriteLine(string.Format("Listener started at {0}:{1}", ipAddress, port));
+
       while (true)
       {
         var client = await server.AcceptTcpClientAsync().ConfigureAwait(false);
-        NetworkStream stream = client.GetStream();
+        Console.WriteLine("Client connected");
+
+        var str = "no response";
+        using (NetworkStream stream = client.GetStream())
+        {
+          byte[] data = new byte[1024];
+          using (MemoryStream ms = new MemoryStream())
+          {
+            int numBytesRead;
+            Console.WriteLine("Start data gathering");
+            while ((numBytesRead = stream.Read(data, 0, data.Length)) > 0)
+            {
+              Console.WriteLine("New data!");
+              ms.Write(data, 0, numBytesRead);
+            }
+
+            str = System.Text.Encoding.ASCII.GetString(ms.ToArray(), 0, (int)ms.Length);
+            Console.WriteLine(string.Format("Got string: {0}", str));
+
+            var address = ((IPEndPoint)client.Client.RemoteEndPoint).Address.ToString();
+            DispatchInputData(str, address);
+          }
+        }
       }
+    }
+
+    private void DispatchInputData(string data, string address)
+    {
+      var relativeMiddlewareIndex = connectedMiddleware.FindIndex(mid => mid.ipAddress == address);
+      onDataListeners.ForEach(listener => listener(relativeMiddlewareIndex, data));
     }
 
     public override void ConnectMiddleware(MiddlewareNetwork middleware)
@@ -43,10 +74,21 @@ namespace tcg
       onDataListeners.Add(handler);
     }
 
+    public override void SendData(string data)
+    {
+      for (int i = 0; i < connectedMiddleware.Count; i++)
+        SendDataPersonally(data, i);
+    }
+
     public override void SendDataPersonally(string data, int receiverIndex)
     {
+      Console.WriteLine("SendDataPersonally");
       MiddlewareNetwork middleware = connectedMiddleware[receiverIndex];
-      TcpClient client = new TcpClient(middleware.ipAddress, port);
+
+      Console.WriteLine(string.Format("Try to connect to {0}:{1}", middleware.ipAddress, middleware.port));
+      TcpClient client = new TcpClient(middleware.ipAddress, middleware.port);
+
+      Console.WriteLine(string.Format("Send \"{0}\" to {1}:{2}", data, middleware.ipAddress, middleware.port));
 
       NetworkStream stream = client.GetStream();
       byte[] dataBinary = System.Text.Encoding.ASCII.GetBytes(data);

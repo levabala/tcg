@@ -18,10 +18,6 @@ namespace tcg
     abstract public void SendDataPersonally(string data, int receiverIndex);
     abstract public void AddInputHandler(Action<int, string> handler);
     abstract public void ConnectMiddleware(ConnectableMiddlewareType middleware);
-    virtual public void SendData(string data)
-    {
-      for (int i = 0; i < onSendDataListeners.Count; i++)
-        SendDataPersonally(data, i);
-    }
+    abstract public void SendData(string data);
   }
 }

@@ -23,6 +23,12 @@ namespace tcg
       onSendDataListeners[receiverIndex](data);
     }
 
+    public override void SendData(string data)
+    {
+      for (int i = 0; i < onSendDataListeners.Count; i++)
+        SendDataPersonally(data, i);
+    }
+
     public override void AddInputHandler(Action<int, string> handler)
     {
       for (int i = 0; i < connectedMiddleware.Count; i++)
