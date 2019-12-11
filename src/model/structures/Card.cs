@@ -14,8 +14,8 @@ namespace tcg
     public int Attack { get; set; }
     public bool IsSleeping { get; set; }
     public bool IsTaunt { get; set; }
-    public string Name{ get; set; }
-    public string Description{ get; set; }
+    public string Name { get; set; }
+    public string Description { get; set; }
     public List<Delegate> OnStartAction { get; set; } = new List<Delegate>();
     public List<Delegate> OnUseAction { get; set; } = new List<Delegate>();
     public List<Delegate> OnDieAction { get; set; } = new List<Delegate>();
@@ -64,6 +64,11 @@ namespace tcg
     public override int GetHashCode()
     {
       return base.GetHashCode();
+    }
+
+    public Card Clone()
+    {
+      return new Card(Name, ManaCost, HP, Attack, IsSleeping, IsTaunt, Description, OnStartAction, OnUseAction, OnDieAction);
     }
 
     static public Card DimonCard()
