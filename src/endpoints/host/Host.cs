@@ -37,7 +37,7 @@ namespace tcg
 
     public void HandleInput(int playerIndex, string input)
     {
-      Console.WriteLine(string.Format("-- message from {0}: {1}", playerIndex, input));
+      // Console.WriteLine(string.Format("-- message from {0}: {1}", playerIndex, input));
       inputHadlers.ForEach(handler => handler(playerIndex, input));
 
       ResponseType validationStatus;
