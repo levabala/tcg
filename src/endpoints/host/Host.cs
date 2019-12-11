@@ -21,9 +21,22 @@ namespace tcg
       this.middleware.AddInputHandler(HandleInput);
     }
 
+    public void StartGame()
+    {
+      ShareGameState();
+    }
+
+    private void ShareGameState()
+    {
+      // TODO: get here count of playing players
+      for (int i = 0; i < 2; i++)
+      {
+        SendDataToPlayer(GameStateVisualizer.GameStateToString(state, i), i);
+      }
+    }
+
     public void HandleInput(int playerIndex, string input)
     {
-      Console.WriteLine(string.Format("message from {0}: {1}", playerIndex, input));
       inputHadlers.ForEach(handler => handler(playerIndex, input));
 
       ResponseType validationStatus;
@@ -32,6 +45,8 @@ namespace tcg
 
       if (validationStatus == ResponseType.Error)
         SendDataToPlayer(message, playerIndex);
+      else
+        ShareGameState();
     }
 
     public void SendDataToPlayer(string data, int playerIndex)
@@ -57,7 +72,7 @@ namespace tcg
         RootAction action = ParseInput(input);
         state = GameLoop.Execute(state, action);
       }
-      catch (ArgumentException e)
+      catch (Exception e)
       {
         return (ResponseType.Error, e.Message);
       }

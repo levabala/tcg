@@ -9,9 +9,12 @@ namespace tcg
   {
     static void Main(string[] args)
     {
-
       Middleware myMiddleware;
+      Host h = null;
       var isHost = args[0] == "-h" || args[0] == "--host";
+
+      Console.WriteLine(string.Format("Session started as {0}", isHost ? "host" : "client"));
+
       if (isHost)
       {
         myMiddleware = new MiddlewareLocal();
@@ -29,12 +32,32 @@ namespace tcg
         middHost.AddInputHandler((i, s) => Console.WriteLine(string.Format("Host got message from {0}: {1}", i, s)));
 
         middHost.ConnectMiddleware(myMiddleware);
+        middHost.ConnectMiddleware(playerMiddleware);
         myMiddleware.ConnectMiddleware(middHost);
 
-        Host h = new Host(middHost, new List<IMiddleware> {
+        h = new Host(middHost, new List<IMiddleware> {
           myMiddleware,
           playerMiddleware,
         });
+
+        GameState state = new GameState(
+          new Player[] {
+            new Player(
+              0,
+              new List<Card> { },
+              new List<Card> { Card.DimonCard() },
+              new List<Card> { Card.DimonCard(), Card.DimonCard() }
+            ) ,
+            new Player(
+              1,
+              new List<Card> { },
+              new List<Card> { },
+              new List<Card> { }
+            ) ,
+          }
+        );
+
+        h.state = state;
       }
       else
       {
@@ -51,7 +74,14 @@ namespace tcg
         serverMiddleware.ConnectMiddleware(myMiddleware);
       }
 
-      myMiddleware.AddInputHandler((i, s) => Console.WriteLine(string.Format("You got messag from host {0}", s)));
+      myMiddleware.AddInputHandler((i, s) => Console.WriteLine(string.Format("You got message from host:\n{0}", s)));
+
+      if (h != null)
+      {
+        Console.WriteLine("Press any key to start the game");
+        Console.ReadKey();
+        h.StartGame();
+      }
 
       while (true)
       {

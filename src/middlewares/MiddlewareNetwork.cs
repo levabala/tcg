@@ -19,7 +19,7 @@ namespace tcg
       this.port = port;
 
       Func<Task> loopFunction = null;
-      loopFunction = () => HandleConnectionsAsync().ContinueWith(t => loopFunction());
+      loopFunction = () => HandleConnectionsAsync().ContinueWith(t => "TaskFinished");
 
       if (listening)
         loopFunction();
@@ -30,51 +30,53 @@ namespace tcg
       var server = new TcpListener(IPAddress.Parse(ipAddress), port);
       server.Start();
 
-      Console.WriteLine(string.Format("Listener started at {0}:{1}", ipAddress, port));
+      // Console.WriteLine(string.Format("Listener started at {0}:{1}", ipAddress, port));
 
-      var client = await server.AcceptTcpClientAsync().ConfigureAwait(false);
-      Console.WriteLine("Client connected");
-
-      var str = "no response";
-      using (NetworkStream stream = client.GetStream())
+      while (true)
       {
-        byte[] data = new byte[1024];
-        using (MemoryStream ms = new MemoryStream())
+        var client = await server.AcceptTcpClientAsync().ConfigureAwait(false);
+        // Console.WriteLine("Client connected");
+
+        var str = "no response";
+        using (NetworkStream stream = client.GetStream())
         {
-          int numBytesRead;
-          Console.WriteLine("Start data gathering");
-          while ((numBytesRead = stream.Read(data, 0, data.Length)) > 0)
+          byte[] data = new byte[1024];
+          using (MemoryStream ms = new MemoryStream())
           {
-            Console.WriteLine("New data!");
-            ms.Write(data, 0, numBytesRead);
+            int numBytesRead;
+            // Console.WriteLine("Start data gathering");
+            while ((numBytesRead = stream.Read(data, 0, data.Length)) > 0)
+            {
+              // Console.WriteLine("New data!");
+              ms.Write(data, 0, numBytesRead);
+            }
+
+            str = System.Text.Encoding.ASCII.GetString(ms.ToArray(), 0, (int)ms.Length);
+            // Console.WriteLine(string.Format("Got string: {0}", str));
+
+            var endPoint = ((IPEndPoint)client.Client.RemoteEndPoint);
+            var address = endPoint.Address.ToString();
+            DispatchInputData(str, address);
           }
-
-          str = System.Text.Encoding.ASCII.GetString(ms.ToArray(), 0, (int)ms.Length);
-          Console.WriteLine(string.Format("Got string: {0}", str));
-
-          var address = ((IPEndPoint)client.Client.RemoteEndPoint).Address.ToString();
-          DispatchInputData(str, address);
         }
+
+        client.Close();
       }
     }
 
     private void DispatchInputData(string data, string address)
     {
-      var relativeMiddlewareIndex = connectedMiddleware.FindIndex(
-        mid => (mid is MiddlewareNetwork middlewareNetwork) ? middlewareNetwork.ipAddress == address : false
-      );
+      // var relativeMiddlewareIndex = connectedMiddleware.FindIndex(
+      //   mid => (mid is MiddlewareNetwork middlewareNetwork) ? middlewareNetwork.ipAddress == address : false
+      // );
 
-      onDataListeners.ForEach(listener => listener(relativeMiddlewareIndex, data));
+      //  Console.WriteLine(string.Format("{0} got '{1}' from {2}", port, data, address));
+      onRecieveDataListeners.ForEach(listener => listener(0, data));
     }
 
     public override void ConnectMiddleware(IMiddleware middleware)
     {
       this.connectedMiddleware.Add(middleware);
-    }
-
-    public override void AddInputHandler(Action<int, string> handler)
-    {
-      onDataListeners.Add(handler);
     }
 
     public override void SendData(string data)
@@ -94,10 +96,11 @@ namespace tcg
 
         stream.Write(dataBinary);
         stream.Close();
-      }
 
-      if (onSendDataListeners.ContainsKey(receiverIndex))
-        onSendDataListeners[receiverIndex](data);
+        // Console.WriteLine(string.Format("Send '{0}' from {1} to {2}", data, port, middleware.port));
+      }
+      else
+        connectedMiddleware[receiverIndex].ReceiveData(data, this);
     }
   }
 }

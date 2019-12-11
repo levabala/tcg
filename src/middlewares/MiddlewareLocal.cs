@@ -21,36 +21,13 @@ namespace tcg
 
     public override void SendDataPersonally(string data, int receiverIndex)
     {
-      // dispatch send data event
-      onSendDataListeners[receiverIndex](data);
-      Console.WriteLine("qweeeeeeeeeeee");
+      connectedMiddleware[receiverIndex].ReceiveData(data, this);
     }
 
     public override void SendData(string data)
     {
-      Console.WriteLine(onSendDataListeners.Count);
-      for (int i = 0; i < onSendDataListeners.Count; i++)
-        SendDataPersonally(data, i);
+      connectedMiddleware.ForEach(midd => midd.ReceiveData(data, this));
     }
-
-    public override void AddInputHandler(Action<int, string> handler)
-    {
-      for (int i = 0; i < connectedMiddleware.Count; i++)
-      {
-        int localI = i;
-        Action<string> closure = input => handler(localI, input);
-
-        // var closure = ((Func<Action<string>>)(() =>
-        // {
-        //   int localI = i;
-        //   return input => handler(localI, input);
-        // }))();
-
-        // TODO: support more than 1 listener
-        connectedMiddleware[i].AddOnSendDataListenerNext(closure);
-      }
-    }
-
     public static (MiddlewareLocal, MiddlewareLocal) GenerateLinkedMiddlewareLocalPair()
     {
       MiddlewareLocal mid1 = new MiddlewareLocal();

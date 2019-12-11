@@ -2,40 +2,45 @@ using System;
 using System.Linq;
 using NUnit.Framework;
 using System.Collections.Generic;
+using tcg;
 
-namespace tcg
+namespace tcgTests
 {
   [TestFixture]
   static class GameStateVisualizerFixture
   {
-    public static string OutputBoard(Player currPlayer){
-        string toReturn = "";
-        
-        Hero currHero = currPlayer.Hero;
+    public static string OutputBoard(Player currPlayer)
+    {
+      string toReturn = "";
 
-        toReturn += string.Format("Player {0} {1} HP\n", currPlayer.Id, currHero.HP);
-        //toReturn += string.Format("Player {0} {1} HP\n", currPlayer.name, currHero.HP); //Когда будет готов Player.name
+      Hero currHero = currPlayer.Hero;
 
-        List<Card> activeCards = currPlayer.ActiveCards;
-        for (int j=0; j<activeCards.Count; j++){
-          Card currCard = activeCards[j];
+      toReturn += string.Format("Player {0} {1} HP\n", currPlayer.Id, currHero.HP);
+      //toReturn += string.Format("Player {0} {1} HP\n", currPlayer.name, currHero.HP); //Когда будет готов Player.name
 
-          toReturn += string.Format(currCard.ToString());
-        }
-        toReturn += "---------------------------------------\n";
+      List<Card> activeCards = currPlayer.ActiveCards;
+      for (int j = 0; j < activeCards.Count; j++)
+      {
+        Card currCard = activeCards[j];
 
-        return toReturn;
+        toReturn += string.Format(currCard.ToString());
+      }
+      toReturn += "---------------------------------------\n";
+
+      return toReturn;
     }
 
-    public static string OutputHand(Player currPlayer){
+    public static string OutputHand(Player currPlayer)
+    {
       string toReturn = "";
 
       List<Card> cardsInHand = currPlayer.CardsInHand;
 
-      for (int i =0; i< cardsInHand.Count; i++){
+      for (int i = 0; i < cardsInHand.Count; i++)
+      {
         Card currCard = cardsInHand[i];
 
-          toReturn += currCard.ToString();
+        toReturn += currCard.ToString();
       }
 
       return toReturn;
@@ -43,7 +48,7 @@ namespace tcg
 
     [Test]
     public static void VisualizeTest()
-    {     
+    {
       GameState state = new GameState(
         new Player[] {
           new Player(
@@ -65,19 +70,20 @@ namespace tcg
       int id = 0;
 
       Player currPlayer = state.Players[id];
-      for (int i = 0; i<state.Players.Length; i++){
+      for (int i = 0; i < state.Players.Length; i++)
+      {
         Player player = state.Players[i];
 
-        if(player.Id != id)
+        if (player.Id != id)
           toReturn += OutputBoard(player);
       }
       toReturn += OutputBoard(currPlayer);
       toReturn += OutputHand(currPlayer);
 
-      string ExpectedString = "Player 1 10 HP\n" + 
+      string ExpectedString = "Player 1 10 HP\n" +
       "---------------------------------------\n" +
       "Player 0 10 HP\n" +
-      "Ironforge Rifleman Mana cost: 3, HP: 2, Attack: 2   Battlecry: Deal 1 damage\n"+
+      "Ironforge Rifleman Mana cost: 3, HP: 2, Attack: 2   Battlecry: Deal 1 damage\n" +
       "---------------------------------------\n" +
       "Voodoo Doctor Mana cost: 1, HP: 1, Attack: 2   Battlecry: Heal 2 damage\n";
 

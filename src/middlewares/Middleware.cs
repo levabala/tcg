@@ -9,26 +9,30 @@ namespace tcg
     void SendDataPersonally(string data, int receiverIndex);
     void AddInputHandler(Action<int, string> handler);
     void ConnectMiddleware(IMiddleware middleware);
-    void AddOnSendDataListener(int playerIndex, Action<string> listener);
-    void AddOnSendDataListenerNext(Action<string> listener);
+    void AddOnSendDataListener(Action<string> listener);
+    void ReceiveData(string data, IMiddleware sender);
   }
 
   abstract class Middleware : IMiddleware
   {
-    public Dictionary<int, Action<string>> onSendDataListeners = new Dictionary<int, Action<string>>();
+    public List<Action<string>> onSendDataListeners = new List<Action<string>>();
+    public List<Action<int, string>> onRecieveDataListeners = new List<Action<int, string>>();
     protected List<IMiddleware> connectedMiddleware = new List<IMiddleware>();
     abstract public void SendDataPersonally(string data, int receiverIndex);
-    abstract public void AddInputHandler(Action<int, string> handler);
     abstract public void ConnectMiddleware(IMiddleware middleware);
     abstract public void SendData(string data);
-    virtual public void AddOnSendDataListener(int playerIndex, Action<string> listener)
+    virtual public void AddOnSendDataListener(Action<string> listener)
     {
-      onSendDataListeners[playerIndex] = listener;
+      onSendDataListeners.Add(listener);
     }
-    virtual public void AddOnSendDataListenerNext(Action<string> listener)
+    virtual public void AddInputHandler(Action<int, string> handler)
     {
-      int playerIndex = onSendDataListeners.Count;
-      onSendDataListeners[playerIndex] = listener;
+      onRecieveDataListeners.Add(handler);
+    }
+    virtual public void ReceiveData(string data, IMiddleware sender)
+    {
+      var senderIndex = connectedMiddleware.FindIndex(s => s == sender);
+      onRecieveDataListeners.ForEach(listener => listener(senderIndex, data));
     }
   }
 }
