@@ -19,6 +19,7 @@ namespace tcg
     public List<Delegate> OnStartAction { get; set; } = new List<Delegate>();
     public List<Delegate> OnUseAction { get; set; } = new List<Delegate>();
     public List<Delegate> OnDieAction { get; set; } = new List<Delegate>();
+    public Card previous;
 
     public Card(string name, int mana, int hp, int attack, bool isSleeping = true, bool isTaunt = false, string description = "", List<Delegate> startAction = null, List<Delegate> useAction = null, List<Delegate> dieAction = null)
     {
@@ -37,11 +38,39 @@ namespace tcg
         OnUseAction = useAction;
       if (dieAction != null)
         OnDieAction = dieAction;
+
+      previous = null;
     }
 
     public override string ToString()
     {
-      return String.Format("{0} Mana cost: {1}, HP: {2}, Attack: {3}   {4}\n", Name, ManaCost, HP, Attack, Description);
+        if (this.previous == null)
+          return String.Format("{0} Mana cost: {1}, HP: {2}, Attack: {3}   {4}\n", Name, ManaCost, HP, Attack, Description);
+        else if (this.previous.Equals(this))
+          return String.Format("{0} Mana cost: {1}, HP: {2}, Attack: {3}   {4}\n", Name, ManaCost, HP, Attack, Description);
+        else{
+          string toReturn = String.Format("{0} Mana cost: {1}, ", Name, ManaCost);
+
+          if (this.HP != this.previous.HP)
+            if(this.HP > this.previous.HP)
+              toReturn += string.Format("HP: {0} (+{1}), ", this.HP, this.HP - this.previous.HP);
+            else
+              toReturn += string.Format("HP: {0} (-{1}), ", this.HP, this.previous.HP - this.HP);
+          else
+            toReturn += string.Format("HP: {0}, ", this.HP);
+
+          if (this.Attack != this.previous.Attack)
+            if(this.Attack > this.previous.Attack)
+              toReturn += string.Format("Attack: {0} (+{1})", this.Attack, this.Attack - this.previous.Attack);
+            else
+              toReturn += string.Format("Attack: {0} (-{1})", this.Attack, this.previous.Attack - this.Attack);
+          else
+            toReturn += string.Format("Attack: {0}", this.Attack);
+          
+          toReturn += string.Format("   {0}\n", Description);
+
+          return toReturn;
+        }
     }
 
     public override bool Equals(object obj)
