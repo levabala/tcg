@@ -23,10 +23,12 @@ namespace tcg
     {
       // dispatch send data event
       onSendDataListeners[receiverIndex](data);
+      Console.WriteLine("qweeeeeeeeeeee");
     }
 
     public override void SendData(string data)
     {
+      Console.WriteLine(onSendDataListeners.Count);
       for (int i = 0; i < onSendDataListeners.Count; i++)
         SendDataPersonally(data, i);
     }

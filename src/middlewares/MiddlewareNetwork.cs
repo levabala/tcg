@@ -18,8 +18,11 @@ namespace tcg
       this.ipAddress = ipAddress;
       this.port = port;
 
+      Func<Task> loopFunction = null;
+      loopFunction = () => HandleConnectionsAsync().ContinueWith(t => loopFunction());
+
       if (listening)
-        HandleConnectionsAsync().ContinueWith(t => Console.WriteLine("Task completed"));
+        loopFunction();
     }
 
     private async Task HandleConnectionsAsync()
@@ -29,31 +32,28 @@ namespace tcg
 
       Console.WriteLine(string.Format("Listener started at {0}:{1}", ipAddress, port));
 
-      while (true)
+      var client = await server.AcceptTcpClientAsync().ConfigureAwait(false);
+      Console.WriteLine("Client connected");
+
+      var str = "no response";
+      using (NetworkStream stream = client.GetStream())
       {
-        var client = await server.AcceptTcpClientAsync().ConfigureAwait(false);
-        Console.WriteLine("Client connected");
-
-        var str = "no response";
-        using (NetworkStream stream = client.GetStream())
+        byte[] data = new byte[1024];
+        using (MemoryStream ms = new MemoryStream())
         {
-          byte[] data = new byte[1024];
-          using (MemoryStream ms = new MemoryStream())
+          int numBytesRead;
+          Console.WriteLine("Start data gathering");
+          while ((numBytesRead = stream.Read(data, 0, data.Length)) > 0)
           {
-            int numBytesRead;
-            Console.WriteLine("Start data gathering");
-            while ((numBytesRead = stream.Read(data, 0, data.Length)) > 0)
-            {
-              Console.WriteLine("New data!");
-              ms.Write(data, 0, numBytesRead);
-            }
-
-            str = System.Text.Encoding.ASCII.GetString(ms.ToArray(), 0, (int)ms.Length);
-            Console.WriteLine(string.Format("Got string: {0}", str));
-
-            var address = ((IPEndPoint)client.Client.RemoteEndPoint).Address.ToString();
-            DispatchInputData(str, address);
+            Console.WriteLine("New data!");
+            ms.Write(data, 0, numBytesRead);
           }
+
+          str = System.Text.Encoding.ASCII.GetString(ms.ToArray(), 0, (int)ms.Length);
+          Console.WriteLine(string.Format("Got string: {0}", str));
+
+          var address = ((IPEndPoint)client.Client.RemoteEndPoint).Address.ToString();
+          DispatchInputData(str, address);
         }
       }
     }
