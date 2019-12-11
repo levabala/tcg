@@ -14,6 +14,7 @@ namespace tcgTests
       (mid1, mid2, midHost) = MiddlewareLocal.GenerateLinkedMiddlewareLocalTriple();
 
       Host host = new Host(midHost, new List<MiddlewareLocal> { mid1, mid2 });
+      host.state = new GameState(new Player[] { new Player(0, new List<Card>(), new List<Card>(), new List<Card>()), new Player(1, new List<Card>(), new List<Card>(), new List<Card>()) });
 
       return (mid1, mid2, midHost, host);
     }
@@ -79,6 +80,25 @@ namespace tcgTests
       midHost.SendData("host's message");
 
       Assert.AreEqual(executions, 2);
+    }
+
+    [Test]
+    public void RejectPlayingAtNotSelfTurn()
+    {
+      IMiddleware mid1, mid2, midHost;
+      Host host;
+
+      (mid1, mid2, midHost, host) = InitializePreset();
+
+      bool executed = false;
+      mid2.AddInputHandler((i, s) =>
+      {
+        executed = true;
+        Assert.AreEqual("That's not your turn now", s);
+      });
+      mid2.SendData("kek");
+
+      Assert.IsTrue(executed);
     }
 
     [Test]
@@ -273,5 +293,7 @@ namespace tcgTests
 
       Assert.AreEqual(host.state, stateExpected);
     }
+
+
   }
 }

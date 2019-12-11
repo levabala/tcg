@@ -143,5 +143,10 @@ namespace tcg
             )
           }
     };
+
+    public static Card SpawnCard(CardName card)
+    {
+      return CardSet.Cards[card]();
+    }
   }
 }

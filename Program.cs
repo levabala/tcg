@@ -45,14 +45,14 @@ namespace tcg
             new Player(
               0,
               new List<Card> { },
-              new List<Card> { Card.DimonCard() },
-              new List<Card> { Card.DimonCard(), Card.DimonCard() }
+              new List<Card> { CardSet.SpawnCard(CardSet.CardName.MurlocTidehunter) },
+              new List<Card> { CardSet.SpawnCard(CardSet.CardName.MurlocTidehunter), CardSet.SpawnCard(CardSet.CardName.GoldshireFootman), CardSet.SpawnCard(CardSet.CardName.MurlocScout) }
             ) ,
             new Player(
               1,
               new List<Card> { },
-              new List<Card> { },
-              new List<Card> { }
+              new List<Card> { CardSet.SpawnCard(CardSet.CardName.FlashHeal), CardSet.SpawnCard(CardSet.CardName.FrostwolfWarlord) },
+              new List<Card> { CardSet.SpawnCard(CardSet.CardName.IronforgeRifleman) }
             ) ,
           }
         );
@@ -74,7 +74,7 @@ namespace tcg
         serverMiddleware.ConnectMiddleware(myMiddleware);
       }
 
-      myMiddleware.AddInputHandler((i, s) => Console.WriteLine(string.Format("You got message from host:\n{0}", s)));
+      myMiddleware.AddInputHandler((i, s) => Console.WriteLine(string.Format("You got message from the host:\n{0}", s)));
 
       if (h != null)
       {

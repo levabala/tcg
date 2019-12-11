@@ -71,7 +71,7 @@ namespace tcg
       // );
 
       //  Console.WriteLine(string.Format("{0} got '{1}' from {2}", port, data, address));
-      onRecieveDataListeners.ForEach(listener => listener(0, data));
+      onRecieveDataListeners.ForEach(listener => listener(1, data));
     }
 
     public override void ConnectMiddleware(IMiddleware middleware)
