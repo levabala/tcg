@@ -107,6 +107,20 @@ namespace tcg
       var targetPlayer = state.Players[0].Id != attackerPlayer.Id ? state.Players[0] : state.Players[1];
 
       var attackerCard = attackerPlayer.ActiveCards[attackerCardIndex];
+      if (targetCardIndex == -1)
+      {
+        foreach (Card c in targetPlayer.ActiveCards)
+          if (c.IsTaunt)
+            throw new ArgumentException("You cannot attack hero because of this player has a taunt");
+
+        targetPlayer.Hero.HP -= attackerCard.Attack;
+        if (targetPlayer.Hero.HP <= 0)
+        {
+          throw new ArgumentException(String.Format("Player {0} won", attackerPlayer.Id));
+        }
+        return state;
+      }
+      //var attackerCard = attackerPlayer.ActiveCards[attackerCardIndex];
       var targetCard = targetPlayer.ActiveCards[targetCardIndex];
 
       if (attackerCard.IsSleeping)

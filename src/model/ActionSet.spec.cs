@@ -341,5 +341,55 @@ namespace tcgTests
       Assert.Catch(() => playCardAction(state), "Not enough cards on table for this action");
 
     }
+
+    [Test]
+    public void AttackHeroTest()
+    {
+      Func<Card> testingCardGenerator = CardSet.Cards[CardSet.CardName.StonetuskBoar];
+
+      GameState state = new GameState(
+        new Player[] {
+          new Player(
+            0,
+            new List<Card> { },
+            new List<Card> { },
+            new List<Card> { testingCardGenerator()}
+          ) ,
+          new Player(
+            1,
+            new List<Card> { },
+            new List<Card> { },
+            new List<Card> { }
+          ) ,
+        }
+      );
+
+      var playCardAction = ActionSet.PackAction(state, ActionType.Attack, new int[] { 0, -1 });
+      playCardAction(state);
+
+      GameState stateExpected = new GameState(
+       new Player[] {
+          new Player(
+            0,
+            new List<Card> { },
+            new List<Card> { },
+            new List<Card> { testingCardGenerator() }
+          ) ,
+          new Player(
+            1,
+            new List<Card> { },
+            new List<Card> { },
+            new List<Card> { },
+            ((Func<Hero>)(() => {
+              var hero = Hero.CommonHero();
+              hero.HP -= testingCardGenerator().Attack;
+              return hero;
+            }))() )
+            }
+          );
+
+
+      Assert.AreEqual(state, stateExpected);
+    }
   }
 }
