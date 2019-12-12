@@ -188,7 +188,7 @@ namespace tcgTests
             new List<Card> { ((Func<Card>)(() => {
               var c = Card.LevCard();
               c.HP -= Card.DimonCard().Attack;
-              c.IsSleeping = false;
+              c.IsSleeping = true;
               return c;
             }))()}
           ) ,
@@ -265,6 +265,7 @@ namespace tcgTests
               var card = Card.DimonCard();
               // Init StrongDimon damaged for 6 points
               card.HP -= testingCardGenerator().Attack;
+              card.IsSleeping = true;
               return card;
             }))() }
           ) ,
@@ -373,7 +374,12 @@ namespace tcgTests
             0,
             new List<Card> { },
             new List<Card> { },
-            new List<Card> { testingCardGenerator() }
+            new List<Card> { ((Func<Card>)(() => {
+              var card = testingCardGenerator();
+              // Init StrongDimon damaged for 6 points
+              card.IsSleeping = true;
+              return card;
+            }))() }
           ) ,
           new Player(
             1,
@@ -417,6 +423,35 @@ namespace tcgTests
       var attackCardAction = ActionSet.PackAction(state, ActionType.Attack, new int[] { 0, -1 });
       //playCardAction(state);
       Assert.Catch(() => attackCardAction(state), "Player 0 won");
+    }
+
+    [Test]
+    public void SleepAfterAttackTest()
+    {
+      Func<Card> attacker = CardSet.Cards[CardSet.CardName.StonetuskBoar];
+      Func<Card> target = CardSet.Cards[CardSet.CardName.StonetuskBoar];
+
+      GameState state = new GameState(
+        new Player[] {
+          new Player(
+            0,
+            new List<Card> { },
+            new List<Card> { },
+            new List<Card> { attacker()}
+          ) ,
+          new Player(
+            1,
+            new List<Card> { },
+            new List<Card> { },
+            new List<Card> { target()}
+          ) ,
+        }
+      );
+
+      var attackCardAction = ActionSet.PackAction(state, ActionType.Attack, new int[] { 0, 0 });
+      attackCardAction(state);
+      //playCardAction(state);
+      Assert.Catch(() => attackCardAction(state), "This creature is sleeping");
     }
   }
 }
