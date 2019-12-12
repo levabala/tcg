@@ -4,6 +4,8 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
+using Pastel;
+using System.Drawing;
 
 namespace tcg
 {
@@ -21,6 +23,8 @@ namespace tcg
 
     static void Main(string[] args)
     {
+      Console.WriteLine(string.Format("{0}{1}", "Initializing".Pastel(Color.DarkGreen), "...".Pastel(Color.Yellow)));
+
       Middleware myMiddleware;
       Host h = null;
       var isHost = args[0] == "-h" || args[0] == "--host";
