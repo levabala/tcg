@@ -8,6 +8,7 @@ namespace tcg
     void SendData(string data);
     void SendDataPersonally(string data, int receiverIndex);
     void AddInputHandler(Action<int, string> handler);
+    void RemoveInputHandler(Action<int, string> handler);
     void ConnectMiddleware(IMiddleware middleware);
     void AddOnSendDataListener(Action<string> listener);
     void ReceiveData(string data, IMiddleware sender);
@@ -28,6 +29,10 @@ namespace tcg
     virtual public void AddInputHandler(Action<int, string> handler)
     {
       onRecieveDataListeners.Add(handler);
+    }
+    virtual public void RemoveInputHandler(Action<int, string> handler)
+    {
+      onRecieveDataListeners.Remove(handler);
     }
     virtual public void ReceiveData(string data, IMiddleware sender)
     {
