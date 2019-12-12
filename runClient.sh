@@ -1,1 +1,1 @@
-dotnet run -- localhost:3001
+dotnet run -- localhost:3001 --local

@@ -35,7 +35,7 @@ namespace tcgTests
       mid1.SendData("message from mid1");
       mid2.SendData("message from mid2");
 
-      Thread.Sleep(200);
+      Thread.Sleep(500);
       Assert.AreEqual(2, messagesCame);
     }
 

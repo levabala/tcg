@@ -24,6 +24,7 @@ namespace tcg
       Middleware myMiddleware;
       Host h = null;
       var isHost = args[0] == "-h" || args[0] == "--host";
+      var isLocal = isHost ? (args.Length > 2 && args[2] == "--local") : (args.Length > 1 && args[1] == "--local");
 
       Console.WriteLine(string.Format("Session started as {0}", isHost ? "host" : "client"));
 
@@ -39,7 +40,7 @@ namespace tcg
         var playerMiddleware = new MiddlewareNetwork(playerIp, playerPort, false);
 
         var port = 3001;
-        var middHost = new MiddlewareNetwork(GetLocalIPAddress(), port, true);
+        var middHost = new MiddlewareNetwork(isLocal ? "127.0.0.1" : GetLocalIPAddress(), port, true);
 
         middHost.AddInputHandler((i, s) => Console.WriteLine(string.Format("Host got message from {0}: {1}", i, s)));
 
@@ -79,7 +80,7 @@ namespace tcg
         var serverPort = int.Parse(arr[1]);
 
         var port = 3002;
-        myMiddleware = new MiddlewareNetwork(GetLocalIPAddress(), port, true);
+        myMiddleware = new MiddlewareNetwork(isLocal ? "127.0.0.1" : GetLocalIPAddress(), port, true);
         var serverMiddleware = new MiddlewareNetwork(serverIp, serverPort, false);
 
         myMiddleware.ConnectMiddleware(serverMiddleware);
