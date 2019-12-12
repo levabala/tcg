@@ -364,8 +364,8 @@ namespace tcgTests
         }
       );
 
-      var playCardAction = ActionSet.PackAction(state, ActionType.Attack, new int[] { 0, -1 });
-      playCardAction(state);
+      var attackCardAction = ActionSet.PackAction(state, ActionType.Attack, new int[] { 0, -1 });
+      attackCardAction(state);
 
       GameState stateExpected = new GameState(
        new Player[] {
@@ -390,6 +390,33 @@ namespace tcgTests
 
 
       Assert.AreEqual(state, stateExpected);
+    }
+
+    [Test]
+    public void AttackHeroWithDeathTest()
+    {
+      Func<Card> testingCardGenerator = CardSet.Cards[CardSet.CardName.StonetuskBoar];
+
+      GameState state = new GameState(
+        new Player[] {
+          new Player(
+            0,
+            new List<Card> { },
+            new List<Card> { },
+            new List<Card> { Card.LevCard()}
+          ) ,
+          new Player(
+            1,
+            new List<Card> { },
+            new List<Card> { },
+            new List<Card> { }
+          ) ,
+        }
+      );
+
+      var attackCardAction = ActionSet.PackAction(state, ActionType.Attack, new int[] { 0, -1 });
+      //playCardAction(state);
+      Assert.Catch(() => attackCardAction(state), "Player 0 won");
     }
   }
 }
