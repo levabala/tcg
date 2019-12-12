@@ -13,9 +13,6 @@ namespace tcg
       // apply main action
       action(state);
 
-      var processChanges = ActionSet.PackAction(state, ActionType.SaveChanges);
-      processChanges(state);
-
       // apply death check action
       var processDeathAction = ActionSet.PackAction(state, ActionType.ProcessDeath);
       processDeathAction(state);
