@@ -41,7 +41,7 @@ namespace tcg
 
     public override string ToString()
     {
-      return String.Format("{0}\t\tMana cost: {1}\tHP: {2}\tAttack: {3}\t{4}\n", Name, ManaCost, HP, Attack, Description);
+      return String.Format("{0} Mana cost: {1}, HP: {2}, Attack: {3}   {4}\n", Name, ManaCost, HP, Attack, Description);
     }
 
     public override bool Equals(object obj)
