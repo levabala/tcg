@@ -45,5 +45,41 @@ namespace tcgTests
 
       // now we have c1 (modified) and its' old clone
     }
+
+    [Test]
+    public void TostringTest(){
+      Card cd1 = new Card("card", 0, 0, 0);
+
+      string expected = "card Mana cost: 0, HP: 0, Attack: 0   \n";
+
+      Assert.AreEqual(cd1.ToString(), expected);
+
+      cd1.previous = cd1.Clone();
+
+      cd1.HP -= 1;
+
+      expected = "card Mana cost: 0, HP: -1 (-1), Attack: 0   \n";
+
+      Assert.AreEqual(expected, cd1.ToString());
+
+      cd1.HP += 3;
+
+      expected = "card Mana cost: 0, HP: 2 (+2), Attack: 0   \n";
+
+      Assert.AreEqual(expected, cd1.ToString());
+
+      cd1.HP = 0;
+      cd1.Attack -=1;
+
+      expected = "card Mana cost: 0, HP: 0, Attack: -1 (-1)   \n";
+
+      Assert.AreEqual(expected, cd1.ToString());
+
+      cd1.Attack +=3;
+
+      expected = "card Mana cost: 0, HP: 0, Attack: 2 (+2)   \n";
+
+      Assert.AreEqual(expected, cd1.ToString());
+    }
   }
 }

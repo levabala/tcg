@@ -21,7 +21,7 @@ namespace tcg
       {
         Card currCard = activeCards[j];
 
-        toReturn += string.Format(currCard.ToString());
+        
       }
       toReturn += "---------------------------------------\n";
 
