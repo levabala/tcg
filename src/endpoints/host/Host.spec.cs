@@ -162,6 +162,7 @@ namespace tcgTests
             new List<Card> { Card.DimonCard(), ((Func<Card>)(() => {
               var c = Card.DimonCard();
               c.HP -= c.Attack;
+              c.IsSleeping = true;
               return c;
             }))() , Card.DimonCard() }
           ) ,
