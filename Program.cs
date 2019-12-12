@@ -2,11 +2,23 @@
 using System.Threading;
 using System.Linq;
 using System.Collections.Generic;
+using System.Net;
+using System.Net.Sockets;
 
 namespace tcg
 {
   class Program
   {
+    public static string GetLocalIPAddress()
+    {
+      var host = Dns.GetHostEntry(Dns.GetHostName());
+      foreach (var ip in host.AddressList)
+        if (ip.AddressFamily == AddressFamily.InterNetwork)
+          return ip.ToString();
+
+      throw new Exception("No network adapters with an IPv4 address in the system!");
+    }
+
     static void Main(string[] args)
     {
       Middleware myMiddleware;
@@ -27,7 +39,7 @@ namespace tcg
         var playerMiddleware = new MiddlewareNetwork(playerIp, playerPort, false);
 
         var port = 3001;
-        var middHost = new MiddlewareNetwork("127.0.0.1", port, true);
+        var middHost = new MiddlewareNetwork(GetLocalIPAddress(), port, true);
 
         middHost.AddInputHandler((i, s) => Console.WriteLine(string.Format("Host got message from {0}: {1}", i, s)));
 
@@ -67,7 +79,7 @@ namespace tcg
         var serverPort = int.Parse(arr[1]);
 
         var port = 3002;
-        myMiddleware = new MiddlewareNetwork("127.0.0.1", port, true);
+        myMiddleware = new MiddlewareNetwork(GetLocalIPAddress(), port, true);
         var serverMiddleware = new MiddlewareNetwork(serverIp, serverPort, false);
 
         myMiddleware.ConnectMiddleware(serverMiddleware);
