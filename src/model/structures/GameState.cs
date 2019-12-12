@@ -11,7 +11,7 @@ namespace tcg
     public bool IsFinished { get; set; }
     public Player CurrentPlayer { get; set; }
     public Player[] Players { get; set; }
-    public Dictionary<Card, Card> previousCardState { get; set; }
+
     public GameState(Player currentPlayer, Player[] players)
     {
       IsFinished = false;
