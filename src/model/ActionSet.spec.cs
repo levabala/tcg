@@ -341,5 +341,82 @@ namespace tcgTests
       Assert.Catch(() => playCardAction(state), "Not enough cards on table for this action");
 
     }
+
+    [Test]
+    public void AttackHeroTest()
+    {
+      Func<Card> testingCardGenerator = CardSet.Cards[CardSet.CardName.StonetuskBoar];
+
+      GameState state = new GameState(
+        new Player[] {
+          new Player(
+            0,
+            new List<Card> { },
+            new List<Card> { },
+            new List<Card> { testingCardGenerator()}
+          ) ,
+          new Player(
+            1,
+            new List<Card> { },
+            new List<Card> { },
+            new List<Card> { }
+          ) ,
+        }
+      );
+
+      var attackCardAction = ActionSet.PackAction(state, ActionType.Attack, new int[] { 0, -1 });
+      attackCardAction(state);
+
+      GameState stateExpected = new GameState(
+       new Player[] {
+          new Player(
+            0,
+            new List<Card> { },
+            new List<Card> { },
+            new List<Card> { testingCardGenerator() }
+          ) ,
+          new Player(
+            1,
+            new List<Card> { },
+            new List<Card> { },
+            new List<Card> { },
+            ((Func<Hero>)(() => {
+              var hero = Hero.CommonHero();
+              hero.HP -= testingCardGenerator().Attack;
+              return hero;
+            }))() )
+            }
+          );
+
+
+      Assert.AreEqual(state, stateExpected);
+    }
+
+    [Test]
+    public void AttackHeroWithDeathTest()
+    {
+      Func<Card> testingCardGenerator = CardSet.Cards[CardSet.CardName.StonetuskBoar];
+
+      GameState state = new GameState(
+        new Player[] {
+          new Player(
+            0,
+            new List<Card> { },
+            new List<Card> { },
+            new List<Card> { Card.LevCard()}
+          ) ,
+          new Player(
+            1,
+            new List<Card> { },
+            new List<Card> { },
+            new List<Card> { }
+          ) ,
+        }
+      );
+
+      var attackCardAction = ActionSet.PackAction(state, ActionType.Attack, new int[] { 0, -1 });
+      //playCardAction(state);
+      Assert.Catch(() => attackCardAction(state), "Player 0 won");
+    }
   }
 }
