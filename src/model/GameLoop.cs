@@ -10,6 +10,9 @@ namespace tcg
   {
     public static GameState Execute(GameState state, Action<GameState> action)
     {
+      var processChanges = ActionSet.PackAction(state, ActionType.SaveChanges);
+      processChanges(state);
+
       // apply main action
       action(state);
 

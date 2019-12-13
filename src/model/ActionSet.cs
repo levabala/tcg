@@ -272,6 +272,21 @@ namespace tcg
 
       return state;
     };
+
+    public static SpecifiedAction SaveChanges = (state, _) =>
+    {
+      for (int i=0; i<state.Players.Length; i++){
+        Player currrentPlayer = state.Players[i];
+
+        for (int j=0; j<currrentPlayer.ActiveCards.Count; j++){
+          Card currentCard = currrentPlayer.ActiveCards[j];
+
+          currentCard.previous = currentCard.Clone();
+        }
+      }
+
+      return state;
+    };
     public static Dictionary<ActionType, Delegate> Actions = new Dictionary<ActionType, Delegate>() {
         {ActionType.Attack, Attack},
         {ActionType.Heal, Heal},
@@ -282,7 +297,8 @@ namespace tcg
         {ActionType.EndTurn, EndTurn},
         {ActionType.WakeUpCreatures, WakeUpAllCreatures},
         {ActionType.PerformActionOnRandomCard, PerformActionOnRandomCard},
-        {ActionType.BuffCreature, BuffCreature}
+        {ActionType.BuffCreature, BuffCreature},
+        {ActionType.SaveChanges, SaveChanges}
       };
   }
 }
