@@ -17,6 +17,7 @@ namespace tcg
     EndTurn,
     WakeUpCreatures,
     PerformActionOnRandomCard,
-    BuffCreature
+    BuffCreature,
+    SaveChanges
   }
 }

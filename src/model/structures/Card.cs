@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Pastel;
+using System.Drawing;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -16,6 +18,8 @@ namespace tcg
     public bool IsTaunt { get; set; }
     public string Name { get; set; }
     public string Description { get; set; }
+
+    public Card previous { get; set; }
     public List<Delegate> OnStartAction { get; set; } = new List<Delegate>();
     public List<Delegate> OnUseAction { get; set; } = new List<Delegate>();
     public List<Delegate> OnDieAction { get; set; } = new List<Delegate>();
@@ -41,7 +45,34 @@ namespace tcg
 
     public override string ToString()
     {
-      return String.Format("{0} Mana cost: {1}, HP: {2}, Attack: {3}   {4}\n", Name, ManaCost, HP, Attack, Description);
+      Func<string, string, string, string, string, string> cardStringGenerator = (name, mana, hp, attack, description) =>
+        string.Format("{0} {1} {2} {3}\n\t{4}\n", name.PadRight(20, ' '), mana.PadLeft(10, ' '), hp.PadLeft(20, ' '), attack.PadLeft(35, ' '), description);
+
+      string MPstring = string.Format("Mana cost: {0}\t", ManaCost).Pastel(Color.MediumTurquoise);
+      string HPstring = string.Format("HP: {0}", HP).Pastel(Color.HotPink);
+      string ATKstring = string.Format("Attack: {0}", Attack).Pastel(Color.Gold);
+      if (this.previous == null)
+        return cardStringGenerator(Name, MPstring, HPstring, ATKstring, Description);
+      else if (this.previous.Equals(this))
+        return cardStringGenerator(Name, MPstring, HPstring, ATKstring, Description);
+      else
+      {
+
+        if (this.HP != this.previous.HP)
+          if (this.HP > this.previous.HP)
+            HPstring += string.Format(" (+{0})", this.HP - this.previous.HP).Pastel(Color.Lime);
+          else
+            HPstring += string.Format(" (-{0})", this.previous.HP - this.HP).Pastel(Color.Crimson);
+
+
+        if (this.Attack != this.previous.Attack)
+          if (this.Attack > this.previous.Attack)
+            ATKstring += string.Format(" (+{0})", this.Attack - this.previous.Attack).Pastel(Color.Lime);
+          else
+            ATKstring += string.Format(" (-{0})", this.previous.Attack - this.Attack).Pastel(Color.Crimson);
+
+        return cardStringGenerator(Name, MPstring, HPstring, ATKstring, Description);
+      }
     }
 
     public override bool Equals(object obj)
