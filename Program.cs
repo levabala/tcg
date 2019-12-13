@@ -44,7 +44,7 @@ namespace tcg
         var playerMiddleware = new MiddlewareNetwork(playerIp, playerPort, false);
 
         var port = 3001;
-        var middHost = new MiddlewareNetwork(isLocal ? "127.0.0.1" : GetLocalIPAddress(), port, true);
+        var middHost = new MiddlewareNetwork("192.168.1.19", port, true);
 
         middHost.AddInputHandler((i, s) => Console.WriteLine(string.Format("Host got message from {0}: {1}", i, s)));
 
@@ -84,7 +84,7 @@ namespace tcg
         var serverPort = int.Parse(arr[1]);
 
         var port = 3002;
-        myMiddleware = new MiddlewareNetwork(isLocal ? "127.0.0.1" : GetLocalIPAddress(), port, true);
+        myMiddleware = new MiddlewareNetwork("192.168.1.198", port, true);
         var serverMiddleware = new MiddlewareNetwork(serverIp, serverPort, false);
 
         myMiddleware.ConnectMiddleware(serverMiddleware);
