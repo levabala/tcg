@@ -8,7 +8,15 @@ namespace tcg
     }
     public static string TurnStart(GameState state, int relativePlayer)
     {
-      return "turn notification + total board";
+      string turnStartNotification = IsYourTurn(state, relativePlayer) ? "Your turn!" : "Opponent's turn..";
+
+      string result = string.Format(@"
+      {0}
+      ",
+      turnStartNotification
+      );
+
+      return result;
     }
 
     private static string TotalBoardToString(GameState state, int relativePlayer)
@@ -37,14 +45,3 @@ namespace tcg
     }
   }
 }
-
-
-// string turnStartNotification = IsYourTurn(state, relativePlayer) ? "Your turn!" : "Opponent's turn..";
-
-//       string result = string.Format(@"
-//       {0}
-//       ",
-//       turnStartNotification
-//       );
-
-//       return result;
